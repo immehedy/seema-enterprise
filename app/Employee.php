@@ -17,4 +17,7 @@ class Employee extends Model
     public function bills(){
       return $this->hasMany('App\EmployeeBill');
     }
+    public function ledger(){
+      return $this->hasMany('App\Ledger');
+    }
 }

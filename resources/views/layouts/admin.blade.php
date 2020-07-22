@@ -1,75 +1,29 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <title>Seema Enterprise</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
-  @yield('styles')
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>@yield('title', 'seemaenterprise')</title>
+    <link rel="stylesheet" href="{{ asset('admin/assets/vendor/simple-line-icons/css/simple-line-icons.css') }}">
+    <link rel="stylesheet" href="{{ asset('admin/assets/vendor/font-awesome/css/fontawesome-all.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('admin/assets/css/styles.css') }}">
 </head>
-<body>
+<body class="sidebar-fixed header-fixed">
+<div class="page-wrapper">
 
-<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-  <!-- Brand -->
-  <a class="navbar-brand" href="#">seema Enterprise</a>
+    @include('includes.admin.header')
+    <div class="main-container">
+        @include('includes.admin.sidebar')
 
-  <!-- Links -->
-  <ul class="navbar-nav">
-    <li class="nav-item">
-      <a class="nav-link" href="#">Home</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="#">Admin</a>
-    </li>
-
-    <!-- Dropdown -->
-    <li class="nav-item dropdown">
-      <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-        Employees
-      </a>
-      <div class="dropdown-menu">
-        <a class="dropdown-item" href="{{route('employees.index')}}">All Employees</a>
-        <a class="dropdown-item" href="{{route('employees.create')}}">Add Employees</a>
-      </div>
-    </li>
-
-    <li class="nav-item dropdown">
-      <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-        Posts
-      </a>
-      <div class="dropdown-menu">
-        <a class="dropdown-item" href="#">All Posts</a>
-        <a class="dropdown-item" href="#">Create Posts</a>
-      </div>
-    </li>
-
-    <li class="nav-item dropdown">
-      <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-        Media
-      </a>
-      <div class="dropdown-menu">
-        <a class="dropdown-item" href="#">Media List</a>
-        <a class="dropdown-item" href="#">Upload</a>
-      </div>
-    </li>
-
-    <li class="nav-item">
-      <a class="nav-link" href="#">Categories</a>
-    </li>
-
-    <li class="nav-item">
-      <a class="nav-link" href="#">Comments</a>
-    </li>
-
-  </ul>
-</nav>
-<br>
-<div class="container">
-  @yield('content')
+        @yield('content')
+    </div>
 </div>
-@yield('scripts')
+<script src="{{ asset('admin/assets/vendor/jquery/jquery.min.js') }}"></script>
+<script src="{{ asset('admin/assets/vendor/popper.js/popper.min.js') }}"></script>
+<script src="{{ asset('admin/assets/vendor/bootstrap/js/bootstrap.min.js') }}"></script>
+<script src="{{ asset('admin/assets/vendor/chart.js/chart.min.js') }}"></script>
+<script src="{{ asset('admin/assets/js/carbon.js') }}"></script>
+<script src="{{ asset('admin/assets/js/demo.js') }}"></script>
 </body>
 </html>

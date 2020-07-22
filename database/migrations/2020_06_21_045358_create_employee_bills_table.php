@@ -15,11 +15,9 @@ class CreateEmployeeBillsTable extends Migration
     {
         Schema::create('employee_bills', function (Blueprint $table) {
             $table->id();
-            $table->integer('employee_id')->unsigned()->index();
-            $table->string('name');
+            $table->string('employee_id');
             $table->string('description');
-            $table->integer('debit');
-            $table->integer('credit');
+            $table->integer('amount');
             $table->timestamps();
         });
     }

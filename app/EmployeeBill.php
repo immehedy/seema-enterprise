@@ -9,11 +9,14 @@ class EmployeeBill extends Model
     //
     protected $fillable=[
       'description',
-      'debit',
-      'credit',
+      'amount',
+      'employee_id',
     ];
 
     public function employee(){
       return $this->belongsTo('App\Employee');
+    }
+    public function ledger(){
+      return $this->hasMany('App\Ledger');
     }
 }
