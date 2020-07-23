@@ -9,6 +9,10 @@ use App\EmployeeBill;
 use App\Ledger;
 use App\Charts\DashboardChart;
 
+use App\Exports\LedgerExport;
+use App\Exports\LedgerExportView;
+use Maatwebsite\Excel\Facades\Excel;
+
 class AdminController extends Controller
 {
     //
@@ -20,7 +24,6 @@ class AdminController extends Controller
       $date = date("Y/m/d");
       $ledgers = Ledger::whereDate('date', $date)->pluck('id')->toArray();
       $dailyledgers = Ledger::whereIn('id', $ledgers)->get();
-      $balance = 0;
 
       $chart = new DashboardChart;
       $days = $this->generateDateRange(Carbon::now()->subDays(30), Carbon::now());
@@ -32,7 +35,7 @@ class AdminController extends Controller
       $chart->labels($days);
 
 
-      return view('admin.dashboard', compact('employees','employeebills','dailyledgers','chart', 'balance'));
+      return view('admin.dashboard', compact('employees','employeebills','dailyledgers','chart'));
     }
 
 
@@ -96,6 +99,23 @@ class AdminController extends Controller
       $ledger->balance = $request['credit'] - $request['debit'];
       $ledger->save();
       return back()->with('success', 'Ledger updated');
+    }
+    public function ledger(){
+      $ledgers = Ledger::all();
+      return view('admin.ledger', compact('ledgers'));
+    }
+
+
+    public function export(){
+      return Excel::download(new LedgerExport(), 'file.xlsx');
+    }
+    public function ledger_export_view(){
+      $date = date("Y-m-d H:i:s");
+      return Excel::download(new LedgerExportView(), $date.'lendger.xlsx');
+    }
+    public function bill_export_view(){
+      $date = date("Y-m-d H:i:s");
+      return Excel::download(new LedgerExportView(), $date.' bill.xlsx');
     }
 
 }

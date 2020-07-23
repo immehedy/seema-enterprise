@@ -1,4 +1,5 @@
 @extends('layouts.admin')
+@section('title') Bills @stop
 @section('content')
 <div class="content">
   <div class="card">
@@ -7,34 +8,32 @@
       </div>
 
       <div class="card-body">
+        <input class="form-control" type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names" title="Type in a name">
           <div class="table-responsive">
-              <table class="table table-striped">
-                  <thead>
-                  <tr>
-                      <th>ID</th>
-                      <th>Employee Name</th>
-                      <th>Details</th>
-                      <th>Amount</th>
-                      <th>Created at</th>
-                      <th>Updated at</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                    @foreach($totalbills as $totalbill)
-                    <tr>
-                      <td>{{$totalbill->id}}</td>
-                      <td class="text-nowrap"> <a href="#">{{$totalbill->employee->name}}</a> </td>
-                      <td>{{$totalbill->description}}</td>
-                      <td>{{$totalbill->amount}}</td>
-                      <td>{{ date_format($totalbill->created_at, 'd/m/Y') }}</td>
-                      <td>{{ date_format($totalbill->updated_at, 'd/m/Y') }}</td>
-                    </tr>
-                    @endforeach
-                  </tbody>
-              </table>
+              @include('table.totalbilltable', $totalbills)
           </div>
+          <a href="{{route('adminBillExport_view')}}" class="btn btn-primary">Download</a>
       </div>
   </div>
 </div>
-
+<script>
+function myFunction() {
+  var input, filter, table, tr, td, i, txtValue;
+  input = document.getElementById("myInput");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("myTable");
+  tr = table.getElementsByTagName("tr");
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[1];
+    if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }
+  }
+}
+</script>
 @stop

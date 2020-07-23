@@ -20,6 +20,11 @@
                     <i class="icon icon-paper-clip"></i> Bills
                 </a>
             </li>
+            <li class="nav-item nav-dropdown">
+                <a href="{{route('adminLedger')}}" class="nav-link" {{Route::currentRouteName() == 'adminLedger' ? 'active' : ''}}>
+                    <i class="icon icon-book-open"></i> Ledger
+                </a>
+            </li>
         </ul>
     </nav>
 </div>

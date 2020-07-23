@@ -1,4 +1,5 @@
 @extends('layouts.admin')
+@section('title') Employees @stop
 @section('content')
 <div class="content">
   <div class="card">
