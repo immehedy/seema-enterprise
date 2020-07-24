@@ -25,6 +25,11 @@
                     <i class="icon icon-book-open"></i> Ledger
                 </a>
             </li>
+            <li class="nav-item nav-dropdown">
+                <a href="{{route('adminProducts')}}" class="nav-link" {{Route::currentRouteName() == 'adminProducts' ? 'active' : ''}}>
+                    <i class="icon icon-basket-loaded"></i> Products
+                </a>
+            </li>
         </ul>
     </nav>
 </div>

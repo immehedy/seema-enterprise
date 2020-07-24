@@ -7,6 +7,7 @@ use Illuminate\Support\Carbon;
 use App\Employee;
 use App\EmployeeBill;
 use App\Ledger;
+use App\Product;
 use App\Charts\DashboardChart;
 
 use App\Exports\LedgerExport;
@@ -116,6 +117,70 @@ class AdminController extends Controller
     public function bill_export_view(){
       $date = date("Y-m-d H:i:s");
       return Excel::download(new LedgerExportView(), $date.' bill.xlsx');
+    }
+
+    public function products(){
+      $products = Product::all();
+      return view('admin.products', compact('products'));
+    }
+    public function newproducts(){
+      return view('admin.newproducts');
+    }
+    public function newproductspost(Request $request){
+      $this->validate($request, [
+        'title'=>'required|string',
+        'thumbnail'=>'required|file',
+        'description'=>'required',
+        'price'=>'required|regex:/^[0-9]+(\.[0-9] [0-9]?)?$/',
+      ]);
+      $product = new Product;
+      $product->title=$request['title'];
+      $product->description=$request['description'];
+      $product->price=$request['price'];
+
+      $thumbnail = $request->file('thumbnail');
+      $filename = $thumbnail->getClientOriginalName();
+      $fileextension = $thumbnail->getClientOriginalExtension();
+
+      $thumbnail->move('product-images', $filename);
+
+      $product->thumbnail= 'product-images/'.$filename;
+      $product->save();
+      return back()->with('success', 'Product is created succesfully');
+    }
+    public function editproduct($id){
+      $product = Product::findOrFail($id);
+      return view('admin.editproduct', compact('product'));
+    }
+    public function editproductpost(Request $request, $id){
+      $this->validate($request, [
+        'title'=>'required|string',
+        'thumbnail'=>'file',
+        'description'=>'required',
+        'price'=>'required|regex:/^[0-9]+(\.[0-9] [0-9]?)?$/',
+      ]);
+      $product = Product::findOrFail($id);
+      $product->title=$request['title'];
+      $product->description=$request['description'];
+      $product->price=$request['price'];
+
+      if($request->hasFile('thumbnail')){
+        $thumbnail = $request->file('thumbnail');
+        $filename = $thumbnail->getClientOriginalName();
+        $thumbnail->move('product-images', $filename);
+        $product->thumbnail= 'product-images/'.$filename;
+      }
+
+      $product->save();
+      return back()->with('success', 'Product is updated succesfully');
+    }
+    public function deleteProduct($id){
+      $product = Product::findOrFail($id);
+      if($product->thumbnail){
+        unlink($product->thumbnail);
+      }
+      $product->delete();
+      return back();
     }
 
 }
