@@ -1,3 +1,4 @@
+@inject('contact', 'App\Contact')
 <nav class="navbar page-header">
     <a href="#" class="btn btn-link sidebar-mobile-toggle d-md-none mr-auto">
         <i class="fa fa-bars"></i>
@@ -12,7 +13,14 @@
     </a>
 
     <ul class="navbar-nav ml-auto">
-      <a href="{{route('newEmployee')}}" class="btn btn-primary"> <i class="fa fa-plus">Employee</i></a> ||
+      <li class="nav-item d-md-down-none">
+          <a href="{{route('adminContacts')}}">
+              <i class="fa fa-envelope-open"></i>
+              <span class="badge badge-pill badge-danger">{{$contact->count()}}</span>
+          </a>
+      </li>
+      <a href="{{route('newEmployee')}}" class="btn btn-primary"> <i class="fa fa-plus">Customer</i></a> ||
+
       <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <img src="{{ asset('admin/assets/imgs/avatar-1.png') }}" class="avatar avatar-sm" alt="logo">

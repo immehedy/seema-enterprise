@@ -13,11 +13,30 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/about',function(){
-  return view('about');
-});
+// Route::get('/about',function(){
+//   return view('about');
+// });
+Route::get('about', 'ShopController@about')->name('about');
+Route::get('contact', 'ShopController@contact')->name('contact');
+Route::post('contact', 'ShopController@contactpost')->name('contactpost');
 Route::get('/', 'ShopController@index')->name('index');
 Route::get('product/{id}', ['as' => 'singleProduct', 'uses' => 'ShopController@singleproduct']);
+
+
+Route::get('onecolor', 'MachineController@onecolor')->name('onecolor');
+Route::get('twocolor', 'MachineController@twocolor')->name('twocolor');
+Route::get('fourcolor', 'MachineController@fourcolor')->name('fourcolor');
+
+Route::get('bookbinding', 'MachineController@bookbinding')->name('bookbinding');
+Route::get('foldingmachine', 'MachineController@foldingmachine')->name('foldingmachine');
+Route::get('diecuttingmachine', 'MachineController@diecuttingmachine')->name('diecuttingmachine');
+Route::get('lamination', 'MachineController@lamination')->name('lamination');
+Route::get('sewingmachine', 'MachineController@sewingmachine')->name('sewingmachine');
+Route::get('foilmachine', 'MachineController@foilmachine')->name('foilmachine');
+
+Route::get('guillotine', 'MachineController@guillotine')->name('guillotine');
+
+
 // Route::get('product/{id}', 'ShopController@orderProduct')->name('orderProduct');
 
 
@@ -42,6 +61,8 @@ Route::prefix('admin')->group(function (){
   Route::get('product/{id}', 'AdminController@editproduct')->name('adminEditProduct');
   Route::post('product/{id}', 'AdminController@editproductpost')->name('adminEditProductPost');
   Route::post('product/{id}/delete', 'AdminController@deleteProduct')->name('adminDeleteProduct');
+  Route::get('contacts', 'AdminController@contacts')->name('adminContacts');
+  Route::post('contacts/{id}', 'AdminController@contactDelete')->name('adminDeleteContact');
 });
 
 Auth::routes();

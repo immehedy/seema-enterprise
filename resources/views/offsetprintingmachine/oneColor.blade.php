@@ -20,18 +20,32 @@
         <div class="album py-5 bg-light">
           <div class="container">
             <div class="row">
+              <div class="col-lg-8 col-md-10 mx-auto">
+                <h2 style="text-align:center">One Color</h2>
+              </div>
+            </div>
+          </div>
+          <div class="container">
+            <div class="row">
               @foreach($products as $product)
               <div class="col-md-4">
                 <div class="card mb-4 shadow-sm">
-                  <div class="card-body">
-                    <img src="{{asset($product->thumbnail)}}" width="300" height="200" alt="">
-                    <h3>{{$product->title}}</h3>
-                    <p class="card-text">{{$product->price}} BDT</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                      <a href="{{route('singleProduct',$product->id)}}" class="btn btn-primary">view</a>
-                      <small class="text-muted">{{$product->created_at->diffForHumans()}}</small>
+                  <a href="{{route('singleProduct',$product->id)}}">
+                    <div class="card-body">
+                      @foreach($photos as $photo)
+                        @if($photo->product_id == $product->id)
+                          <img src="{{asset($photo->name)}}" width="300" height="200" alt="">
+                          @break
+                        @endif
+
+                      @endforeach
+                      <h3>{{$product->title}}</h3>
+                      <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">{{$product->created_at->diffForHumans()}}</small>
+                      </div>
                     </div>
-                  </div>
+                  </a>
+
                 </div>
               </div>
               @endforeach

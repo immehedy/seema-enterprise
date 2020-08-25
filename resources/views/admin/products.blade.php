@@ -17,7 +17,7 @@
                       <th>Thumbnail</th>
                       <th>Title</th>
                       <th>Description</th>
-                      <th>Price</th>
+                      <th>Category</th>
                       <th>Action</th>
                   </tr>
                   </thead>
@@ -25,10 +25,18 @@
                     @foreach($products as $product)
                     <tr>
                       <td>{{$product->id}}</td>
-                      <td> <img src="{{asset($product->thumbnail)}}" width="100"> </td>
+                      <td>
+                        @foreach($photos as $photo)
+                          @if($photo->product_id == $product->id)
+                            <img src="{{asset($photo->name)}}" width="100" height="100" alt="">
+                            @break
+                          @endif
+
+                        @endforeach
+                      </td>
                       <td class="text-nowrap"> <a href="#">{{$product->title}}</a> </td>
                       <td>{{substr($product->description,0,20)}}</td>
-                      <td>{{$product->price}} BDT</td>
+                      <td>{{$product->category}}</td>
                       <td>
                         <a href="{{route('adminEditProduct', $product->id)}}" class="btn btn-warning"> <i class="icon icon-pencil"></i> </a>
                         <form id="deleteProduct-{{$product->id}}" style="display : none" class="" action="{{route('adminDeleteProduct', $product->id)}}" method="post">

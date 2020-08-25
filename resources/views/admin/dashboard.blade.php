@@ -4,7 +4,7 @@
 @section('content')
 <div class="content">
     <div class="container-fluid">
-        <div class="row">
+        <!-- <div class="row">
             <div class="col-md-6">
                 <div class="card p-4">
                     <div class="card-body d-flex justify-content-between align-items-center">
@@ -34,7 +34,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
 
         <div class="row ">
             <div class="col-md-6">
@@ -68,19 +68,19 @@
                                         <div class="col-md-8">
                                             <div class="form-group">
                                                 <label for="normal-input" class="form-control-label">Date</label>
-                                                <input type="text" name="todaysdate" value="{!! date("Y/m/d") !!}">
+                                                <input type="date" name="date">
                                             </div>
                                             </div>
                                             <div class="col-md-8">
                                                 <div class="form-group">
-                                                    <label for="placeholder-input" class="form-control-label">Name</label>
+                                                    <label for="placeholder-input" class="form-control-label">Particulars</label>
                                                     <input name="name" id="normal-input" class="form-control">
                                                 </div>
                                             </div>
 
                                             <div class="col-md-8">
                                                 <div class="form-group">
-                                                    <label for="placeholder-input" class="form-control-label">Bill no.</label>
+                                                    <label for="placeholder-input" class="form-control-label">Folio or Page</label>
                                                     <input name="bill_id" id="normal-input" class="form-control">
                                                 </div>
                                             </div>

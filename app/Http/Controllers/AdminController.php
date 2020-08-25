@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
 use App\Employee;
 use App\EmployeeBill;
 use App\Ledger;
 use App\Product;
+use App\Contact;
+use App\Photo;
 use App\Charts\DashboardChart;
 
 use App\Exports\LedgerExport;
@@ -91,13 +94,13 @@ class AdminController extends Controller
     }
     public function dailyBill(Request $request){
       $ledger = new Ledger();
-      $ledger->date = $request['todaysdate'];
+      $ledger->date = $request['date'];
       $ledger->name = $request['name'];
       $ledger->bill_id = $request['bill_id'];
       $ledger->check_id = $request['check_id'];
       $ledger->debit = $request['debit'];
       $ledger->credit = $request['credit'];
-      $ledger->balance = $request['credit'] - $request['debit'];
+      $ledger->balance = $request['debit'] - $request['credit'];
       $ledger->save();
       return back()->with('success', 'Ledger updated');
     }
@@ -121,7 +124,8 @@ class AdminController extends Controller
 
     public function products(){
       $products = Product::all();
-      return view('admin.products', compact('products'));
+      $photos = Photo::all();
+      return view('admin.products', compact('products', 'photos'));
     }
     public function newproducts(){
       return view('admin.newproducts');
@@ -129,23 +133,25 @@ class AdminController extends Controller
     public function newproductspost(Request $request){
       $this->validate($request, [
         'title'=>'required|string',
-        'thumbnail'=>'required|file',
         'description'=>'required',
-        'price'=>'required|regex:/^[0-9]+(\.[0-9] [0-9]?)?$/',
+        'category'=>'required',
       ]);
       $product = new Product;
       $product->title=$request['title'];
       $product->description=$request['description'];
-      $product->price=$request['price'];
-
-      $thumbnail = $request->file('thumbnail');
-      $filename = $thumbnail->getClientOriginalName();
-      $fileextension = $thumbnail->getClientOriginalExtension();
-
-      $thumbnail->move('product-images', $filename);
-
-      $product->thumbnail= 'product-images/'.$filename;
+      $product->category=$request['category'];
+      $product->premium=$request['premium'];
       $product->save();
+      if($request->hasfile('thumbnail')){
+        foreach($request->thumbnail as $file){
+          $filename=$file->getClientOriginalName();
+          $file->move($product->title, $filename);
+          $photo = new Photo;
+          $photo->name=$product->title.'/'.$filename;
+          $photo->product_id=$product->id;
+          $photo->save();
+        }
+      }
       return back()->with('success', 'Product is created succesfully');
     }
     public function editproduct($id){
@@ -155,20 +161,24 @@ class AdminController extends Controller
     public function editproductpost(Request $request, $id){
       $this->validate($request, [
         'title'=>'required|string',
-        'thumbnail'=>'file',
         'description'=>'required',
-        'price'=>'required|regex:/^[0-9]+(\.[0-9] [0-9]?)?$/',
+        'category'=>'required',
       ]);
       $product = Product::findOrFail($id);
       $product->title=$request['title'];
       $product->description=$request['description'];
-      $product->price=$request['price'];
+      $product->category=$request['category'];
+      $product->premium=$request['premium'];
 
-      if($request->hasFile('thumbnail')){
-        $thumbnail = $request->file('thumbnail');
-        $filename = $thumbnail->getClientOriginalName();
-        $thumbnail->move('product-images', $filename);
-        $product->thumbnail= 'product-images/'.$filename;
+      if($request->hasfile('thumbnail')){
+        foreach($request->thumbnail as $file){
+          $filename=$file->getClientOriginalName();
+          $file->move($product->title, $filename);
+          $photo = new Photo;
+          $photo->name=$product->title.'/'.$filename;
+          $photo->product_id=$product->id;
+          $photo->save();
+        }
       }
 
       $product->save();
@@ -176,10 +186,23 @@ class AdminController extends Controller
     }
     public function deleteProduct($id){
       $product = Product::findOrFail($id);
+      $photos = Photo::where('product_id', $id);
       if($product->thumbnail){
         unlink($product->thumbnail);
       }
+      // foreach($photos as $photo){
+      //   unlink($product->photos->name);
+      // }
+      $photos->delete();
       $product->delete();
+      return back();
+    }
+    public function contacts(){
+      $contacts = Contact::all();
+      return view('admin.contact', compact('contacts'));
+    }
+    public function contactDelete(Request $request, $id){
+      $contact = Contact::findOrFail($id)->delete();
       return back();
     }
 

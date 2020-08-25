@@ -30,7 +30,7 @@ Edit Product
                             <div class="col-md-8">
                                 <div class="form-group">
                                     <label for="normal-input" class="form-control-label">Thumbnail</label>
-                                    <input type="file" name="thumbnail" class="form-control" >
+                                    <input type="file" name="thumbnail[]" class="form-control" multiple >
                                 </div>
                                 <img src="{{ asset($product->thumbnail)}}" width="100" alt="">
                             </div>
@@ -45,6 +45,25 @@ Edit Product
                             </div>
 
                           </div>
+                          <div class="row">
+                            <div class="col-md-8">
+                              <div class="form-group">
+                                <label for="exampleFormControlSelect1">Choose a category</label>
+                                <select name="category" class="form-control" id="exampleFormControlSelect1" value="{{$product->category}}" >
+                                  <option>one color</option>
+                                  <option>two color</option>
+                                  <option>four color</option>
+                                  <option>book binding</option>
+                                  <option>foil machine</option>
+                                  <option>die cutting machine</option>
+                                  <option>lamination machine</option>
+                                  <option>sewing machine</option>
+                                  <option>folding machine</option>
+                                  <option>guillotine</option>
+                                </select>
+                              </div>
+                            </div>
+                          </div>
                           <div class="row mt-4">
                               <div class="col-md-8">
                                   <div class="form-group">
@@ -56,14 +75,13 @@ Edit Product
                           <div class="row">
                             <div class="col-md-8">
                                 <div class="form-group">
-                                    <label for="normal-input" class="form-control-label">Price</label>
-                                    <input name="price" value="{{$product->price}}"  class="form-control" >
+                                  <input type="checkbox" id="premium" name="premium" value="premium">
+                                  <label for="premium">Premium</label>
                                 </div>
                             </div>
-
                           </div>
 
-                          <button class="btn btn-success" type="submit" name="createproduct">Edit Product</button>
+                          <button class="btn btn-success" type="submit" name="createproduct">Update</button>
                       </div>
                     </form>
 

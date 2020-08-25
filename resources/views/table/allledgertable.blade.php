@@ -14,7 +14,8 @@
     <tbody>
       @foreach($ledgers as $ledger)
       <tr>
-        <td>{{ date_format($ledger->created_at, 'd/m/Y') }}</td>
+        <!-- <td>{{ date_format($ledger->created_at, 'd/m/Y') }}</td> -->
+        <td>{{$ledger->date}}</td>
         <td>{{$ledger->name}}</td>
         <td>{{$ledger->bill_id}}</td>
         <td>{{$ledger->check_id}}</td>
