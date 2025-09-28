@@ -106,19 +106,20 @@ export default function HomePage() {
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-muted/30 to-muted/60 py-10">
-        <div className="container mx-auto px-4">
+      <section className="relative bg-gradient-to-br from-muted/30 to-muted/60 py-12 sm:py-16 lg:py-20">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Left Side */}
             <div className="space-y-8">
               <div className="space-y-4">
                 <Badge variant="secondary" className="w-fit">
                   Trusted Since 1992
                 </Badge>
-                <h1 className="text-4xl lg:text-6xl font-bold text-balance leading-tight">
+                <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold leading-tight">
                   Premium Printing & Paper Converting{" "}
                   <span className="text-accent">Machinery</span>
                 </h1>
-                <p className="text-xl text-muted-foreground text-pretty leading-relaxed">
+                <p className="text-base sm:text-lg lg:text-xl text-muted-foreground leading-relaxed">
                   Your trusted partner for high-quality printing and
                   paper-converting equipment. From offset presses to finishing
                   machines, we supply the industry's best machinery worldwide.
@@ -127,52 +128,46 @@ export default function HomePage() {
 
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link href="/stock" passHref>
-                  <Button size="lg" className="text-lg px-8">
+                  <Button size="lg" className="text-base sm:text-lg px-6 sm:px-8">
                     Browse Stock Catalogue
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </Link>
-
                 <Link href="/contact" passHref>
                   <Button
                     variant="outline"
                     size="lg"
-                    className="text-lg px-8 bg-transparent">
+                    className="text-base sm:text-lg px-6 sm:px-8 bg-transparent">
                     Request Quote
                   </Button>
                 </Link>
               </div>
 
-              <div className="flex items-center gap-8 pt-4">
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="h-5 w-5 text-accent" />
-                  <span className="text-sm font-medium">
-                    Quality Guaranteed
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="h-5 w-5 text-accent" />
-                  <span className="text-sm font-medium">Global Shipping</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="h-5 w-5 text-accent" />
-                  <span className="text-sm font-medium">Expert Support</span>
-                </div>
+              <div className="flex flex-wrap gap-4 pt-4">
+                {["Quality Guaranteed", "Global Shipping", "Expert Support"].map(
+                  (item, i) => (
+                    <div key={i} className="flex items-center gap-2">
+                      <CheckCircle className="h-5 w-5 text-accent" />
+                      <span className="text-sm font-medium">{item}</span>
+                    </div>
+                  )
+                )}
               </div>
             </div>
 
+            {/* Right Side */}
             <div className="relative">
               <div className="aspect-[4/3] rounded-2xl overflow-hidden bg-muted">
                 <Image
                   src="/seema-hero.jpg"
                   alt="Modern printing machinery in operation"
                   fill
-                  className="object-fit"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  className="object-cover"
+                  sizes="100vw"
                   priority
                 />
               </div>
-              <div className="absolute -bottom-6 -left-6 bg-background border rounded-xl p-4 shadow-lg">
+              <div className="absolute -bottom-6 -left-4 sm:-left-6 bg-background border rounded-xl p-4 shadow-lg w-[90%] sm:w-auto">
                 <div className="flex items-center gap-3">
                   <div className="flex -space-x-2">
                     <div className="w-8 h-8 rounded-full bg-accent"></div>
@@ -203,15 +198,15 @@ export default function HomePage() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 bg-primary text-primary-foreground">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+      <section className="py-12 sm:py-16 bg-primary text-primary-foreground">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
               <div key={index} className="text-center">
-                <div className="text-3xl lg:text-4xl font-bold mb-2">
+                <div className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2">
                   {stat.number}
                 </div>
-                <div className="text-sm lg:text-base opacity-90">
+                <div className="text-sm sm:text-base opacity-90">
                   {stat.label}
                 </div>
               </div>
@@ -221,23 +216,23 @@ export default function HomePage() {
       </section>
 
       {/* Featured Products */}
-      <section className="py-20">
-        <div className="container mx-auto px-4">
+      <section className="py-16 sm:py-20">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <Badge variant="secondary" className="mb-4">
               Featured Equipment
             </Badge>
-            <h2 className="text-3xl lg:text-4xl font-bold mb-4 text-balance">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4">
               Latest Arrivals & Premium Machinery
             </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto text-pretty">
+            <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
               Discover our carefully selected collection of high-quality
               printing and paper-converting equipment from leading
               manufacturers.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
             {featuredProducts.map((product) => (
               <Card
                 key={product.id}
@@ -246,11 +241,9 @@ export default function HomePage() {
                   <Image
                     src={product.image || "/placeholder.svg"}
                     alt={product.name}
-                    width={800} // or actual image width
-                    height={400} // or actual image height
-                    className="w-full h-48 object-cover rounded-t-lg"
-                    style={{ objectFit: "cover" }}
-                    priority // optional for above-the-fold content
+                    width={800}
+                    height={400}
+                    className="w-full h-48 sm:h-56 lg:h-48 object-cover rounded-t-lg"
                   />
                   {product.isNew && (
                     <Badge className="absolute top-3 left-3 bg-accent text-accent-foreground">
@@ -266,12 +259,12 @@ export default function HomePage() {
                 <CardHeader className="pb-3">
                   <div className="flex items-start justify-between">
                     <div>
-                      <CardTitle className="text-lg leading-tight group-hover:text-accent transition-colors">
+                      <CardTitle className="text-base sm:text-lg leading-tight group-hover:text-accent transition-colors">
                         <Link href={`/stock/${product.id}`}>
                           {product.name}
                         </Link>
                       </CardTitle>
-                      <CardDescription className="text-sm">
+                      <CardDescription className="text-xs sm:text-sm">
                         {product.category}
                       </CardDescription>
                     </div>
@@ -319,22 +312,22 @@ export default function HomePage() {
       </section>
 
       {/* Services Section */}
-      <section className="py-20 bg-muted/30">
-        <div className="container mx-auto px-4">
+      <section className="py-16 sm:py-20 bg-muted/30">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <Badge variant="secondary" className="mb-4">
               Our Services
             </Badge>
-            <h2 className="text-3xl lg:text-4xl font-bold mb-4 text-balance">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4">
               Complete Solutions for Your Business
             </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto text-pretty">
+            <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
               Beyond equipment sales, we provide comprehensive services to
               ensure your success in the printing and packaging industry.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {services.map((service, index) => (
               <Card
                 key={index}
@@ -343,12 +336,12 @@ export default function HomePage() {
                   <div className="mx-auto mb-4 p-3 bg-accent/10 rounded-full w-fit text-accent">
                     {service.icon}
                   </div>
-                  <CardTitle className="text-xl">{service.title}</CardTitle>
+                  <CardTitle className="text-lg sm:text-xl">
+                    {service.title}
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription className="text-pretty">
-                    {service.description}
-                  </CardDescription>
+                  <CardDescription>{service.description}</CardDescription>
                 </CardContent>
               </Card>
             ))}
@@ -357,26 +350,26 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20">
-        <div className="container mx-auto px-4">
+      <section className="py-16 sm:py-20">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <Card className="bg-gradient-to-r from-primary to-primary/90 text-primary-foreground">
-            <CardContent className="p-12 text-center">
-              <h2 className="text-3xl lg:text-4xl font-bold mb-4 text-balance">
+            <CardContent className="p-8 sm:p-12 text-center">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4">
                 Ready to Find Your Perfect Machinery?
               </h2>
-              <p className="text-xl opacity-90 mb-8 max-w-2xl mx-auto text-pretty">
+              <p className="text-base sm:text-lg lg:text-xl opacity-90 mb-8 max-w-2xl mx-auto">
                 Get in touch with our experts today. We'll help you find the
                 right equipment for your specific needs and budget.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button size="lg" variant="secondary" className="text-lg px-8">
+                <Button size="lg" variant="secondary" className="text-base sm:text-lg px-6 sm:px-8">
                   <Phone className="mr-2 h-5 w-5" />
                   Call Now: +880 1711-871147
                 </Button>
                 <Button
                   size="lg"
                   variant="outline"
-                  className="text-lg px-8 bg-transparent border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary">
+                  className="text-base sm:text-lg px-6 sm:px-8 bg-transparent border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary">
                   <Mail className="mr-2 h-5 w-5" />
                   Send Enquiry
                 </Button>
