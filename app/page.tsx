@@ -19,6 +19,7 @@ import {
   Mail,
 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function HomePage() {
   const featuredProducts = [
@@ -162,10 +163,13 @@ export default function HomePage() {
 
             <div className="relative">
               <div className="aspect-[4/3] rounded-2xl overflow-hidden bg-muted">
-                <img
+                <Image
                   src="/seema-hero.jpg"
                   alt="Modern printing machinery in operation"
-                  className="w-full h-full object-cover"
+                  fill
+                  className="object-fit"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  priority
                 />
               </div>
               <div className="absolute -bottom-6 -left-6 bg-background border rounded-xl p-4 shadow-lg">
@@ -239,10 +243,14 @@ export default function HomePage() {
                 key={product.id}
                 className="group hover:shadow-lg transition-shadow">
                 <div className="relative">
-                  <img
+                  <Image
                     src={product.image || "/placeholder.svg"}
                     alt={product.name}
+                    width={800} // or actual image width
+                    height={400} // or actual image height
                     className="w-full h-48 object-cover rounded-t-lg"
+                    style={{ objectFit: "cover" }}
+                    priority // optional for above-the-fold content
                   />
                   {product.isNew && (
                     <Badge className="absolute top-3 left-3 bg-accent text-accent-foreground">
@@ -259,7 +267,9 @@ export default function HomePage() {
                   <div className="flex items-start justify-between">
                     <div>
                       <CardTitle className="text-lg leading-tight group-hover:text-accent transition-colors">
-                        <Link href={`/stock/${product.id}`}>{product.name}</Link>
+                        <Link href={`/stock/${product.id}`}>
+                          {product.name}
+                        </Link>
                       </CardTitle>
                       <CardDescription className="text-sm">
                         {product.category}

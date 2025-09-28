@@ -1,32 +1,61 @@
-"use client"
+"use client";
 
-import { useEffect, useState, useMemo } from "react"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
-import { Search, Filter, Grid, List, SlidersHorizontal, Eye, Heart, Phone } from "lucide-react"
-import { contentfulClient } from "@/lib/contentful"
+import { useEffect, useState, useMemo } from "react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import {
+  Search,
+  Filter,
+  Grid,
+  List,
+  SlidersHorizontal,
+  Eye,
+  Heart,
+  Phone,
+} from "lucide-react";
+import { contentfulClient } from "@/lib/contentful";
+import Image from "next/image";
 
 // ----------- TypeScript interface for a Machine ----------
 interface Machine {
-  name: string
-  brand: string
-  model: string
-  category: string
-  year: number
-  condition: string
-  price: number
-  location: string
-  features: string[]
-  specifications: Record<string, any>
-  isAvailable: boolean
-  isFeatured: boolean
-  images?: { url: string }[]
+  name: string;
+  slug: string;
+  brand: string;
+  model: string;
+  category: string;
+  year: number;
+  condition: string;
+  price: number;
+  location: string;
+  features: string[];
+  specifications: Record<string, any>;
+  isAvailable: boolean;
+  isFeatured: boolean;
+  images?: { url: string }[];
 }
 
 // ----------- Filters data ----------
@@ -37,26 +66,40 @@ const categories = [
   "Die Cutting Machine",
   "Folding Machine",
   "Cutting Machine",
-]
-const brands = ["All Brands", "Heidelberg", "Komori", "Bobst", "Stahl", "Manroland", "Polar"]
-const conditions = ["All Conditions", "Like New", "Excellent", "Very Good", "Good"]
-const years = ["All Years", "2021", "2020", "2019", "2018", "2017"]
+];
+const brands = [
+  "All Brands",
+  "Heidelberg",
+  "Komori",
+  "Bobst",
+  "Stahl",
+  "Manroland",
+  "Polar",
+];
+const conditions = [
+  "All Conditions",
+  "Like New",
+  "Excellent",
+  "Very Good",
+  "Good",
+];
+const years = ["All Years", "2021", "2020", "2019", "2018", "2017"];
 
 export default function StockPage() {
-  const [machines, setMachines] = useState<Machine[]>([])
-  const [loading, setLoading] = useState(true)
+  const [machines, setMachines] = useState<Machine[]>([]);
+  const [loading, setLoading] = useState(true);
 
   // Filters state
-  const [searchTerm, setSearchTerm] = useState("")
-  const [selectedCategory, setSelectedCategory] = useState("All Categories")
-  const [selectedBrand, setSelectedBrand] = useState("All Brands")
-  const [selectedCondition, setSelectedCondition] = useState("All Conditions")
-  const [selectedYear, setSelectedYear] = useState("All Years")
-  const [priceRange, setPriceRange] = useState({ min: "", max: "" })
-  const [showAvailableOnly, setShowAvailableOnly] = useState(false)
-  const [showFeaturedOnly, setShowFeaturedOnly] = useState(false)
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
-  const [sortBy, setSortBy] = useState("name")
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All Categories");
+  const [selectedBrand, setSelectedBrand] = useState("All Brands");
+  const [selectedCondition, setSelectedCondition] = useState("All Conditions");
+  const [selectedYear, setSelectedYear] = useState("All Years");
+  const [priceRange, setPriceRange] = useState({ min: "", max: "" });
+  const [showAvailableOnly, setShowAvailableOnly] = useState(false);
+  const [showFeaturedOnly, setShowFeaturedOnly] = useState(false);
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [sortBy, setSortBy] = useState("name");
 
   // Fetch machines from Contentful
   useEffect(() => {
@@ -64,10 +107,10 @@ export default function StockPage() {
       try {
         const entries = await contentfulClient.getEntries({
           content_type: "printingMachine",
-        })
+        });
 
         const mapped = entries.items.map((entry: any) => {
-          const fields = entry.fields
+          const fields = entry.fields;
           return {
             ...fields,
             images: (fields.images || []).map((img: any) => ({
@@ -75,19 +118,19 @@ export default function StockPage() {
                 ? "https:" + img.fields.file.url
                 : "/placeholder.jpg",
             })),
-          }
-        }) as Machine[]
+          };
+        }) as Machine[];
 
-        setMachines(mapped)
+        setMachines(mapped);
       } catch (error) {
-        console.error("Error fetching machines from Contentful:", error)
+        console.error("Error fetching machines from Contentful:", error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchMachines()
-  }, [])
+    fetchMachines();
+  }, []);
 
   const filteredStock = useMemo(() => {
     const filtered = machines.filter((item) => {
@@ -95,18 +138,26 @@ export default function StockPage() {
         item.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.brand?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.model?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.category?.toLowerCase().includes(searchTerm.toLowerCase())
+        item.category?.toLowerCase().includes(searchTerm.toLowerCase());
 
-      const matchesCategory = selectedCategory === "All Categories" || item.category === selectedCategory
-      const matchesBrand = selectedBrand === "All Brands" || item.brand === selectedBrand
-      const matchesCondition = selectedCondition === "All Conditions" || item.condition === selectedCondition
-      const matchesYear = selectedYear === "All Years" || item.year?.toString() === selectedYear
+      const matchesCategory =
+        selectedCategory === "All Categories" ||
+        item.category === selectedCategory;
+      const matchesBrand =
+        selectedBrand === "All Brands" || item.brand === selectedBrand;
+      const matchesCondition =
+        selectedCondition === "All Conditions" ||
+        item.condition === selectedCondition;
+      const matchesYear =
+        selectedYear === "All Years" || item.year?.toString() === selectedYear;
 
-      const matchesPriceMin = !priceRange.min || item.price >= Number.parseInt(priceRange.min)
-      const matchesPriceMax = !priceRange.max || item.price <= Number.parseInt(priceRange.max)
+      const matchesPriceMin =
+        !priceRange.min || item.price >= Number.parseInt(priceRange.min);
+      const matchesPriceMax =
+        !priceRange.max || item.price <= Number.parseInt(priceRange.max);
 
-      const matchesAvailable = !showAvailableOnly || item.isAvailable
-      const matchesFeatured = !showFeaturedOnly || item.isFeatured
+      const matchesAvailable = !showAvailableOnly || item.isAvailable;
+      const matchesFeatured = !showFeaturedOnly || item.isFeatured;
 
       return (
         matchesSearch &&
@@ -118,26 +169,26 @@ export default function StockPage() {
         matchesPriceMax &&
         matchesAvailable &&
         matchesFeatured
-      )
-    })
+      );
+    });
 
     // Sort
     filtered.sort((a, b) => {
       switch (sortBy) {
         case "price-low":
-          return a.price - b.price
+          return a.price - b.price;
         case "price-high":
-          return b.price - a.price
+          return b.price - a.price;
         case "year-new":
-          return b.year - a.year
+          return b.year - a.year;
         case "year-old":
-          return a.year - b.year
+          return a.year - b.year;
         default:
-          return a.name.localeCompare(b.name)
+          return a.name.localeCompare(b.name);
       }
-    })
+    });
 
-    return filtered
+    return filtered;
   }, [
     machines,
     searchTerm,
@@ -149,25 +200,25 @@ export default function StockPage() {
     showAvailableOnly,
     showFeaturedOnly,
     sortBy,
-  ])
+  ]);
 
   const clearFilters = () => {
-    setSearchTerm("")
-    setSelectedCategory("All Categories")
-    setSelectedBrand("All Brands")
-    setSelectedCondition("All Conditions")
-    setSelectedYear("All Years")
-    setPriceRange({ min: "", max: "" })
-    setShowAvailableOnly(false)
-    setShowFeaturedOnly(false)
-  }
+    setSearchTerm("");
+    setSelectedCategory("All Categories");
+    setSelectedBrand("All Brands");
+    setSelectedCondition("All Conditions");
+    setSelectedYear("All Years");
+    setPriceRange({ min: "", max: "" });
+    setShowAvailableOnly(false);
+    setShowFeaturedOnly(false);
+  };
 
   if (loading) {
     return (
       <div className="container mx-auto px-4 py-20 text-center">
         <p>Loading machines from Contentful...</p>
       </div>
-    )
+    );
   }
 
   return (
@@ -175,7 +226,8 @@ export default function StockPage() {
       <div className="mb-8">
         <h1 className="text-3xl lg:text-4xl font-bold mb-4">Stock Catalogue</h1>
         <p className="text-xl text-muted-foreground">
-          Browse our extensive collection of printing and paper-converting machinery
+          Browse our extensive collection of printing and paper-converting
+          machinery
         </p>
       </div>
 
@@ -277,16 +329,14 @@ export default function StockPage() {
               variant={viewMode === "grid" ? "default" : "ghost"}
               size="sm"
               onClick={() => setViewMode("grid")}
-              className="rounded-r-none"
-            >
+              className="rounded-r-none">
               <Grid className="h-4 w-4" />
             </Button>
             <Button
               variant={viewMode === "list" ? "default" : "ghost"}
               size="sm"
               onClick={() => setViewMode("list")}
-              className="rounded-l-none"
-            >
+              className="rounded-l-none">
               <List className="h-4 w-4" />
             </Button>
           </div>
@@ -302,20 +352,28 @@ export default function StockPage() {
               <h3 className="text-lg font-semibold mb-2">No machines found</h3>
               <p>Try adjusting your search criteria or filters</p>
             </div>
-            <Button onClick={clearFilters} variant="outline" className="bg-transparent">
+            <Button
+              onClick={clearFilters}
+              variant="outline"
+              className="bg-transparent">
               Clear All Filters
             </Button>
           </CardContent>
         </Card>
       ) : (
-        <div className={viewMode === "grid" ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" : "space-y-4"}>
+        <div
+          className={
+            viewMode === "grid"
+              ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+              : "space-y-4"
+          }>
           {filteredStock.map((machine, idx) => (
             <MachineCard key={idx} machine={machine} viewMode={viewMode} />
           ))}
         </div>
       )}
     </div>
-  )
+  );
 }
 
 // ------------- FilterControls -------------
@@ -373,7 +431,9 @@ function FilterControls({
 
         <div>
           <label className="text-sm font-medium mb-2 block">Condition</label>
-          <Select value={selectedCondition} onValueChange={setSelectedCondition}>
+          <Select
+            value={selectedCondition}
+            onValueChange={setSelectedCondition}>
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
@@ -406,59 +466,84 @@ function FilterControls({
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="text-sm font-medium mb-2 block">Min Price (USD)</label>
+          <label className="text-sm font-medium mb-2 block">
+            Min Price (USD)
+          </label>
           <Input
             type="number"
             placeholder="0"
             value={priceRange.min}
-            onChange={(e) => setPriceRange({ ...priceRange, min: e.target.value })}
+            onChange={(e) =>
+              setPriceRange({ ...priceRange, min: e.target.value })
+            }
           />
         </div>
         <div>
-          <label className="text-sm font-medium mb-2 block">Max Price (USD)</label>
+          <label className="text-sm font-medium mb-2 block">
+            Max Price (USD)
+          </label>
           <Input
             type="number"
             placeholder="1000000"
             value={priceRange.max}
-            onChange={(e) => setPriceRange({ ...priceRange, max: e.target.value })}
+            onChange={(e) =>
+              setPriceRange({ ...priceRange, max: e.target.value })
+            }
           />
         </div>
       </div>
 
       <div className="flex flex-wrap gap-4">
         <div className="flex items-center space-x-2">
-          <Checkbox id="available" checked={showAvailableOnly} onCheckedChange={setShowAvailableOnly} />
+          <Checkbox
+            id="available"
+            checked={showAvailableOnly}
+            onCheckedChange={setShowAvailableOnly}
+          />
           <label htmlFor="available" className="text-sm font-medium">
             Available only
           </label>
         </div>
         <div className="flex items-center space-x-2">
-          <Checkbox id="featured" checked={showFeaturedOnly} onCheckedChange={setShowFeaturedOnly} />
+          <Checkbox
+            id="featured"
+            checked={showFeaturedOnly}
+            onCheckedChange={setShowFeaturedOnly}
+          />
           <label htmlFor="featured" className="text-sm font-medium">
             Featured only
           </label>
         </div>
       </div>
 
-      <Button onClick={clearFilters} variant="outline" className="w-full bg-transparent">
+      <Button
+        onClick={clearFilters}
+        variant="outline"
+        className="w-full bg-transparent">
         <SlidersHorizontal className="h-4 w-4 mr-2" />
         Clear All Filters
       </Button>
     </div>
-  )
+  );
 }
 
 // ------------- MachineCard -------------
-function MachineCard({ machine, viewMode }: { machine: Machine; viewMode: "grid" | "list" }) {
+function MachineCard({
+  machine,
+  viewMode,
+}: {
+  machine: Machine;
+  viewMode: "grid" | "list";
+}) {
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("en-IN", {
       style: "currency",
       currency: "USD",
       minimumFractionDigits: 0,
-    }).format(price)
-  }
+    }).format(price);
+  };
 
-  const imageUrl = machine.images?.[0]?.url || "/placeholder.jpg"
+  const imageUrl = machine.images?.[0]?.url || "/placeholder.jpg";
 
   if (viewMode === "list") {
     return (
@@ -466,13 +551,18 @@ function MachineCard({ machine, viewMode }: { machine: Machine; viewMode: "grid"
         <CardContent className="p-6">
           <div className="flex flex-col md:flex-row gap-6">
             <div className="relative w-full md:w-48 h-32 flex-shrink-0">
-              <img
+              <Image
                 src={imageUrl}
                 alt={machine.name}
+                width={800} // replace with actual width if known
+                height={600} // replace with actual height if known
                 className="w-full h-full object-cover rounded-lg"
+                style={{ objectFit: "cover" }}
               />
               {machine.isFeatured && (
-                <Badge className="absolute top-2 left-2 bg-accent text-accent-foreground">Featured</Badge>
+                <Badge className="absolute top-2 left-2 bg-accent text-accent-foreground">
+                  Featured
+                </Badge>
               )}
               {!machine.isAvailable && (
                 <Badge variant="destructive" className="absolute top-2 right-2">
@@ -484,13 +574,17 @@ function MachineCard({ machine, viewMode }: { machine: Machine; viewMode: "grid"
               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
                 <div>
                   <h3 className="text-xl font-semibold hover:text-accent transition-colors">
-                    <Link href={`/stock/${machine.name}`}>{machine.name}</Link>
+                    <Link href={`/stock/${machine.slug}`}>{machine.name}</Link>
                   </h3>
                   <p className="text-muted-foreground">{machine.category}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-2xl font-bold text-accent">{formatPrice(machine.price)}</p>
-                  <p className="text-sm text-muted-foreground">{machine.location}</p>
+                  <p className="text-2xl font-bold text-accent">
+                    {formatPrice(machine.price)}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    {machine.location}
+                  </p>
                 </div>
               </div>
               <div className="flex flex-wrap gap-2">
@@ -504,12 +598,15 @@ function MachineCard({ machine, viewMode }: { machine: Machine; viewMode: "grid"
               </div>
               <div className="flex flex-col sm:flex-row gap-2">
                 <Button size="sm" className="flex-1" asChild>
-                  <Link href={`/stock/${machine.name}`}>
+                  <Link href={`/stock/${machine.slug}`}>
                     <Eye className="h-4 w-4 mr-2" />
                     View Details
                   </Link>
                 </Button>
-                <Button size="sm" variant="outline" className="flex-1 bg-transparent">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="flex-1 bg-transparent">
                   <Phone className="h-4 w-4 mr-2" />
                   Contact
                 </Button>
@@ -521,20 +618,25 @@ function MachineCard({ machine, viewMode }: { machine: Machine; viewMode: "grid"
           </div>
         </CardContent>
       </Card>
-    )
+    );
   }
 
   // Grid view
   return (
     <Card className="group hover:shadow-lg transition-shadow">
       <div className="relative">
-        <img
+        <Image
           src={imageUrl}
           alt={machine.name}
+          width={800} // or your known width
+          height={192} // h-48 = 12rem = 192px
           className="w-full h-48 object-cover rounded-t-lg"
+          style={{ objectFit: "cover" }}
         />
         {machine.isFeatured && (
-          <Badge className="absolute top-3 left-3 bg-accent text-accent-foreground">Featured</Badge>
+          <Badge className="absolute top-3 left-3 bg-accent text-accent-foreground">
+            Featured
+          </Badge>
         )}
         {!machine.isAvailable && (
           <Badge variant="destructive" className="absolute top-3 right-3">
@@ -544,8 +646,7 @@ function MachineCard({ machine, viewMode }: { machine: Machine; viewMode: "grid"
         <Button
           size="sm"
           variant="secondary"
-          className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity"
-        >
+          className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
           <Heart className="h-4 w-4" />
         </Button>
       </div>
@@ -553,9 +654,11 @@ function MachineCard({ machine, viewMode }: { machine: Machine; viewMode: "grid"
         <div className="flex items-start justify-between">
           <div className="flex-1">
             <CardTitle className="text-lg leading-tight group-hover:text-accent transition-colors">
-              <Link href={`/stock/${machine.name}`}>{machine.name}</Link>
+              <Link href={`/stock/${machine.slug}`}>{machine.name}</Link>
             </CardTitle>
-            <CardDescription className="text-sm">{machine.category}</CardDescription>
+            <CardDescription className="text-sm">
+              {machine.category}
+            </CardDescription>
           </div>
           <div className="text-right">
             <Badge variant="outline" className="text-xs mb-1">
@@ -578,18 +681,25 @@ function MachineCard({ machine, viewMode }: { machine: Machine; viewMode: "grid"
           </div>
           <div className="flex items-center justify-between">
             <div>
-              <span className="text-lg font-bold text-accent">{formatPrice(machine.price)}</span>
-              <p className="text-xs text-muted-foreground">{machine.location}</p>
+              <span className="text-lg font-bold text-accent">
+                {formatPrice(machine.price)}
+              </span>
+              <p className="text-xs text-muted-foreground">
+                {machine.location}
+              </p>
             </div>
           </div>
           <div className="flex gap-2">
             <Button size="sm" className="flex-1" asChild>
-              <Link href={`/stock/${machine.name}`}>
+              <Link href={`/stock/${machine.slug}`}>
                 <Eye className="h-4 w-4 mr-1" />
                 View
               </Link>
             </Button>
-            <Button size="sm" variant="outline" className="flex-1 bg-transparent">
+            <Button
+              size="sm"
+              variant="outline"
+              className="flex-1 bg-transparent">
               <Phone className="h-4 w-4 mr-1" />
               Call
             </Button>
@@ -597,5 +707,5 @@ function MachineCard({ machine, viewMode }: { machine: Machine; viewMode: "grid"
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

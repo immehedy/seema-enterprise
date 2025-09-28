@@ -1,8 +1,7 @@
 "use client";
 
 import type React from "react";
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -39,84 +38,26 @@ import {
   ChevronLeft,
   ChevronRight,
   Maximize2,
+  Loader2,
 } from "lucide-react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
-
-// Mock data - in a real app, this would come from an API
-const machineData = {
-  1: {
-    id: 1,
-    name: "Heidelberg Speedmaster SM 74-4",
-    brand: "Heidelberg",
-    model: "SM 74-4",
-    category: "Offset Printing Press",
-    year: 2018,
-    condition: "Excellent",
-    price: 450000,
-    location: "Mumbai, India",
-    images: [
-      "/heidelberg-offset-printing-press-machine-industria.jpg",
-      "/placeholder.svg",
-      "/placeholder.svg",
-      "/placeholder.svg",
-    ],
-    features: [
-      "4-Color",
-      "Auto Plate Loading",
-      "CIP4 Compatible",
-      "Perfecting",
-      "Alcohol Dampening",
-      "Remote Control",
-    ],
-    specifications: {
-      "Max Sheet Size": "520 x 740 mm",
-      "Min Sheet Size": "210 x 297 mm",
-      "Max Speed": "15,000 sheets/hour",
-      Colors: "4",
-      "Plate Size": "530 x 750 mm",
-      "Paper Weight": "40-400 gsm",
-      "Power Consumption": "45 kW",
-      "Machine Weight": "18,500 kg",
-      "Installation Space": "12 x 8 x 3.5 m",
-    },
-    description:
-      "This Heidelberg Speedmaster SM 74-4 is a premium 4-color offset printing press in excellent condition. Known for its reliability and print quality, this machine features automatic plate loading, CIP4 compatibility, and perfecting capabilities. Perfect for commercial printing operations requiring high-quality output and efficient production.",
-    advantages: [
-      "Exceptional print quality with consistent color reproduction",
-      "High-speed production up to 15,000 sheets per hour",
-      "Automatic plate loading reduces setup time",
-      "CIP4 compatibility for seamless workflow integration",
-      "Perfecting unit for double-sided printing",
-      "Low maintenance requirements",
-    ],
-    technicalDetails: {
-      "Printing Technology": "Offset Lithography",
-      "Feeding System": "Stream feeder with pre-separation",
-      "Dampening System": "Alcohol dampening with continuous circulation",
-      "Inking System": "Film inking with ductor roller",
-      Registration: "Automatic register adjustment",
-      "Control System": "CP2000 Center console with touch screen",
-    },
-    isAvailable: true,
-    isFeatured: true,
-    seller: {
-      name: "Seema Enterprise",
-      contact: "+880 1711-871147",
-      email: "info@seemaenterprise.com",
-      location: "Mumbai, India",
-    },
-  },
-  // Add more machines as needed
-};
+import { useParams, useRouter } from "next/navigation";
+import { getMachineBySlug, richTextToPlainText, getImageUrl } from "@/lib/contentful";
+import type { MachineEntry } from "@/types/contentful";
 
 export default function ProductDetailPage() {
   const params = useParams();
-  const machineId = Number.parseInt(params.id as string);
-  const machine = machineData[machineId as keyof typeof machineData];
+  const router = useRouter();
+  const machineSlug = params.id as string;
 
+  console.log("slug", machineSlug)
+  
+  const [machine, setMachine] = useState<MachineEntry | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isEnquiryOpen, setIsEnquiryOpen] = useState(false);
+  const [enquirySubmitting, setEnquirySubmitting] = useState(false);
   const [enquiryForm, setEnquiryForm] = useState({
     name: "",
     email: "",
@@ -125,14 +66,64 @@ export default function ProductDetailPage() {
     message: "",
   });
 
-  if (!machine) {
+  useEffect(() => {
+    async function fetchMachine() {
+      if (!machineSlug) {
+        setError("No machine slug provided");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        setLoading(true);
+        setError(null);
+        
+        const machineData = await getMachineBySlug(machineSlug);
+        
+        if (machineData) {
+          setMachine(machineData);
+        } else {
+          setError("Machine not found");
+        }
+      } catch (err) {
+        console.error("Error fetching machine:", err);
+        setError("Failed to load machine data");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchMachine();
+  }, [machineSlug]);
+
+  if (loading) {
     return (
       <div className="container mx-auto px-4 py-8">
         <Card>
           <CardContent className="p-12 text-center">
-            <h1 className="text-2xl font-bold mb-4">Machine Not Found</h1>
+            <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
+            <h1 className="text-2xl font-bold mb-4">Loading Machine Details...</h1>
+            <p className="text-muted-foreground">
+              Please wait while we fetch the machine information.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (error || !machine) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <Card>
+          <CardContent className="p-12 text-center">
+            <h1 className="text-2xl font-bold mb-4">
+              {error || "Machine Not Found"}
+            </h1>
             <p className="text-muted-foreground mb-6">
-              The requested machine could not be found.
+              {error === "Machine not found"
+                ? "The requested machine could not be found."
+                : "There was an error loading the machine data. Please try again later."}
             </p>
             <Button asChild>
               <Link href="/stock">
@@ -154,35 +145,115 @@ export default function ProductDetailPage() {
     }).format(price);
   };
 
+  const images = machine.fields.images?.map(getImageUrl) || ['/placeholder.svg'];
+  
   const nextImage = () => {
-    setCurrentImageIndex((prev) => (prev + 1) % machine.images.length);
+    setCurrentImageIndex((prev) => (prev + 1) % images.length);
   };
 
   const prevImage = () => {
-    setCurrentImageIndex(
-      (prev) => (prev - 1 + machine.images.length) % machine.images.length
-    );
+    setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
   };
 
-  const handleEnquirySubmit = (e: React.FormEvent) => {
+  const handleEnquirySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log("Enquiry submitted:", enquiryForm);
-    setIsEnquiryOpen(false);
-    // Reset form
-    setEnquiryForm({
-      name: "",
-      email: "",
-      phone: "",
-      company: "",
-      message: "",
-    });
+    
+    setEnquirySubmitting(true);
+    
+    try {
+      const enquiryData = {
+        ...enquiryForm,
+        machine: machine.fields.name,
+        machineId: machine.sys.id,
+        machineSlug: machine.fields.slug,
+        timestamp: new Date().toISOString(),
+      };
+      
+      console.log("Enquiry submitted:", enquiryData);
+      
+      // Here you would typically send the data to your backend API
+      // Example:
+      // const response = await fetch('/api/enquiry', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify(enquiryData)
+      // });
+      
+      // if (!response.ok) {
+      //   throw new Error('Failed to submit enquiry');
+      // }
+      
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      setIsEnquiryOpen(false);
+      
+      // Reset form
+      setEnquiryForm({
+        name: "",
+        email: "",
+        phone: "",
+        company: "",
+        message: "",
+      });
+      
+      // You could show a success toast here
+      alert('Enquiry sent successfully! We will contact you soon.');
+      
+    } catch (error) {
+      console.error('Error submitting enquiry:', error);
+      alert('Failed to send enquiry. Please try again.');
+    } finally {
+      setEnquirySubmitting(false);
+    }
   };
+
+  const handleShare = async () => {
+    const shareData = {
+      title: machine.fields.name,
+      text: `Check out this ${machine.fields.category}: ${machine.fields.name}`,
+      url: window.location.href,
+    };
+
+    try {
+      if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+        await navigator.share(shareData);
+      } else {
+        // Fallback: copy URL to clipboard
+        await navigator.clipboard.writeText(window.location.href);
+        alert('Link copied to clipboard!');
+      }
+    } catch (err) {
+      console.error('Error sharing:', err);
+      // Fallback for older browsers
+      const textArea = document.createElement('textarea');
+      textArea.value = window.location.href;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      alert('Link copied to clipboard!');
+    }
+  };
+
+  const handlePhoneCall = () => {
+    if (machine.fields.seller?.contact) {
+      window.location.href = `tel:${machine.fields.seller.contact}`;
+    }
+  };
+
+  const specifications = machine.fields.specifications || {};
+  const technicalDetails = machine.fields.technicalDetails || {};
+  const features = machine.fields.features || [];
+  const advantages = machine.fields.advantages || [];
+  const description = machine.fields.description 
+    ? richTextToPlainText(machine.fields.description)
+    : "No description available for this machine.";
 
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Breadcrumb */}
-      <div className="flex items-center gap-2 text-sm text-muted-foreground mb-6">
+      <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-6">
         <Link href="/" className="hover:text-primary">
           Home
         </Link>
@@ -191,8 +262,8 @@ export default function ProductDetailPage() {
           Stock
         </Link>
         <span>/</span>
-        <span className="text-foreground">{machine.name}</span>
-      </div>
+        <span className="text-foreground">{machine.fields.name}</span>
+      </nav>
 
       {/* Back Button */}
       <Button variant="outline" className="mb-6 bg-transparent" asChild>
@@ -209,26 +280,31 @@ export default function ProductDetailPage() {
             <CardContent className="p-0">
               <div className="relative">
                 <img
-                  src={machine.images[currentImageIndex] || "/placeholder.svg"}
-                  alt={`${machine.name} - Image ${currentImageIndex + 1}`}
+                  src={images[currentImageIndex]}
+                  alt={`${machine.fields.name} - Image ${currentImageIndex + 1}`}
                   className="w-full h-96 lg:h-[500px] object-cover rounded-t-lg"
+                  onError={(e) => {
+                    e.currentTarget.src = '/placeholder.svg';
+                  }}
                 />
 
                 {/* Image Navigation */}
-                {machine.images.length > 1 && (
+                {images.length > 1 && (
                   <>
                     <Button
                       variant="secondary"
                       size="sm"
                       className="absolute left-4 top-1/2 transform -translate-y-1/2"
-                      onClick={prevImage}>
+                      onClick={prevImage}
+                      aria-label="Previous image">
                       <ChevronLeft className="h-4 w-4" />
                     </Button>
                     <Button
                       variant="secondary"
                       size="sm"
                       className="absolute right-4 top-1/2 transform -translate-y-1/2"
-                      onClick={nextImage}>
+                      onClick={nextImage}
+                      aria-label="Next image">
                       <ChevronRight className="h-4 w-4" />
                     </Button>
                   </>
@@ -236,7 +312,7 @@ export default function ProductDetailPage() {
 
                 {/* Image Counter */}
                 <div className="absolute bottom-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
-                  {currentImageIndex + 1} / {machine.images.length}
+                  {currentImageIndex + 1} / {images.length}
                 </div>
 
                 {/* Expand Button */}
@@ -245,16 +321,15 @@ export default function ProductDetailPage() {
                     <Button
                       variant="secondary"
                       size="sm"
-                      className="absolute top-4 right-4">
+                      className="absolute top-4 right-4"
+                      aria-label="View full size image">
                       <Maximize2 className="h-4 w-4" />
                     </Button>
                   </DialogTrigger>
                   <DialogContent className="max-w-4xl">
                     <img
-                      src={
-                        machine.images[currentImageIndex] || "/placeholder.svg"
-                      }
-                      alt={`${machine.name} - Full Size`}
+                      src={images[currentImageIndex]}
+                      alt={`${machine.fields.name} - Full Size`}
                       className="w-full h-auto max-h-[80vh] object-contain"
                     />
                   </DialogContent>
@@ -262,10 +337,10 @@ export default function ProductDetailPage() {
               </div>
 
               {/* Thumbnail Gallery */}
-              {machine.images.length > 1 && (
+              {images.length > 1 && (
                 <div className="p-4">
                   <div className="flex gap-2 overflow-x-auto">
-                    {machine.images.map((image, index) => (
+                    {images.map((image, index) => (
                       <button
                         key={index}
                         onClick={() => setCurrentImageIndex(index)}
@@ -273,11 +348,15 @@ export default function ProductDetailPage() {
                           index === currentImageIndex
                             ? "border-accent"
                             : "border-border"
-                        }`}>
+                        }`}
+                        aria-label={`View image ${index + 1}`}>
                         <img
-                          src={image || "/placeholder.svg"}
+                          src={image}
                           alt={`Thumbnail ${index + 1}`}
                           className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.currentTarget.src = '/placeholder.svg';
+                          }}
                         />
                       </button>
                     ))}
@@ -296,23 +375,27 @@ export default function ProductDetailPage() {
               <div className="flex items-start justify-between">
                 <div>
                   <CardTitle className="text-2xl mb-2">
-                    {machine.name}
+                    {machine.fields.name}
                   </CardTitle>
                   <CardDescription className="text-base">
-                    {machine.category}
+                    {machine.fields.category}
                   </CardDescription>
                 </div>
                 <div className="flex gap-2">
                   <Button
                     variant="outline"
                     size="sm"
-                    className="bg-transparent">
+                    className="bg-transparent"
+                    onClick={() => {/* Add to favorites functionality */}}
+                    aria-label="Add to favorites">
                     <Heart className="h-4 w-4" />
                   </Button>
                   <Button
                     variant="outline"
                     size="sm"
-                    className="bg-transparent">
+                    className="bg-transparent"
+                    onClick={handleShare}
+                    aria-label="Share machine">
                     <Share2 className="h-4 w-4" />
                   </Button>
                 </div>
@@ -320,14 +403,18 @@ export default function ProductDetailPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex flex-wrap gap-2">
-                {machine.isFeatured && (
+                {machine.fields.isFeatured && (
                   <Badge className="bg-accent text-accent-foreground">
                     Featured
                   </Badge>
                 )}
-                <Badge variant="outline">{machine.year}</Badge>
-                <Badge variant="secondary">{machine.condition}</Badge>
-                {machine.isAvailable ? (
+                {machine.fields.year && (
+                  <Badge variant="outline">{machine.fields.year}</Badge>
+                )}
+                {machine.fields.condition && (
+                  <Badge variant="secondary">{machine.fields.condition}</Badge>
+                )}
+                {machine.fields.isAvailable ? (
                   <Badge className="bg-green-500 text-white">Available</Badge>
                 ) : (
                   <Badge variant="destructive">Sold</Badge>
@@ -336,26 +423,30 @@ export default function ProductDetailPage() {
 
               <div className="space-y-2">
                 <div className="text-3xl font-bold text-accent">
-                  {formatPrice(machine.price)}
+                  {formatPrice(machine.fields.price)}
                 </div>
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <MapPin className="h-4 w-4" />
-                  <span>{machine.location}</span>
-                </div>
+                {machine.fields.location && (
+                  <div className="flex items-center gap-2 text-muted-foreground">
+                    <MapPin className="h-4 w-4" />
+                    <span>{machine.fields.location}</span>
+                  </div>
+                )}
               </div>
 
               <Separator />
 
-              <div className="space-y-2">
-                <h4 className="font-semibold">Key Features</h4>
-                <div className="flex flex-wrap gap-1">
-                  {machine.features.map((feature, index) => (
-                    <Badge key={index} variant="outline" className="text-xs">
-                      {feature}
-                    </Badge>
-                  ))}
+              {features.length > 0 && (
+                <div className="space-y-2">
+                  <h4 className="font-semibold">Key Features</h4>
+                  <div className="flex flex-wrap gap-1">
+                    {features.map((feature, index) => (
+                      <Badge key={index} variant="outline" className="text-xs">
+                        {feature}
+                      </Badge>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
             </CardContent>
           </Card>
 
@@ -369,7 +460,7 @@ export default function ProductDetailPage() {
             <CardContent className="space-y-3">
               <Dialog open={isEnquiryOpen} onOpenChange={setIsEnquiryOpen}>
                 <DialogTrigger asChild>
-                  <Button className="w-full" size="lg">
+                  <Button className="w-full" size="lg" disabled={!machine.fields.isAvailable}>
                     <Mail className="h-4 w-4 mr-2" />
                     Send Enquiry
                   </Button>
@@ -378,8 +469,7 @@ export default function ProductDetailPage() {
                   <DialogHeader>
                     <DialogTitle>Send Enquiry</DialogTitle>
                     <DialogDescription>
-                      Get in touch with us about this machine. We'll respond
-                      within 24 hours.
+                      Get in touch with us about {machine.fields.name}. We'll respond within 24 hours.
                     </DialogDescription>
                   </DialogHeader>
                   <form onSubmit={handleEnquirySubmit} className="space-y-4">
@@ -395,6 +485,7 @@ export default function ProductDetailPage() {
                           })
                         }
                         required
+                        disabled={enquirySubmitting}
                       />
                     </div>
                     <div>
@@ -410,12 +501,14 @@ export default function ProductDetailPage() {
                           })
                         }
                         required
+                        disabled={enquirySubmitting}
                       />
                     </div>
                     <div>
                       <Label htmlFor="phone">Phone</Label>
                       <Input
                         id="phone"
+                        type="tel"
                         value={enquiryForm.phone}
                         onChange={(e) =>
                           setEnquiryForm({
@@ -423,6 +516,7 @@ export default function ProductDetailPage() {
                             phone: e.target.value,
                           })
                         }
+                        disabled={enquirySubmitting}
                       />
                     </div>
                     <div>
@@ -436,6 +530,7 @@ export default function ProductDetailPage() {
                             company: e.target.value,
                           })
                         }
+                        disabled={enquirySubmitting}
                       />
                     </div>
                     <div>
@@ -451,22 +546,33 @@ export default function ProductDetailPage() {
                           })
                         }
                         rows={3}
+                        disabled={enquirySubmitting}
                       />
                     </div>
-                    <Button type="submit" className="w-full">
-                      Send Enquiry
+                    <Button type="submit" className="w-full" disabled={enquirySubmitting}>
+                      {enquirySubmitting ? (
+                        <>
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          Sending...
+                        </>
+                      ) : (
+                        'Send Enquiry'
+                      )}
                     </Button>
                   </form>
                 </DialogContent>
               </Dialog>
 
-              <Button
-                variant="outline"
-                className="w-full bg-transparent"
-                size="lg">
-                <Phone className="h-4 w-4 mr-2" />
-                Call: {machine.seller.contact}
-              </Button>
+              {machine.fields.seller?.contact && (
+                <Button
+                  variant="outline"
+                  className="w-full bg-transparent"
+                  size="lg"
+                  onClick={handlePhoneCall}>
+                  <Phone className="h-4 w-4 mr-2" />
+                  Call: {machine.fields.seller.contact}
+                </Button>
+              )}
 
               <div className="text-center text-sm text-muted-foreground">
                 <p>Response time: Within 24 hours</p>
@@ -477,26 +583,34 @@ export default function ProductDetailPage() {
           {/* Quick Specs */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Quick Specifications</CardTitle>
+              <CardTitle className="text-lg">Quick Information</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               <div className="grid grid-cols-2 gap-3 text-sm">
-                <div>
-                  <span className="text-muted-foreground">Brand:</span>
-                  <p className="font-medium">{machine.brand}</p>
-                </div>
-                <div>
-                  <span className="text-muted-foreground">Model:</span>
-                  <p className="font-medium">{machine.model}</p>
-                </div>
-                <div>
-                  <span className="text-muted-foreground">Year:</span>
-                  <p className="font-medium">{machine.year}</p>
-                </div>
-                <div>
-                  <span className="text-muted-foreground">Condition:</span>
-                  <p className="font-medium">{machine.condition}</p>
-                </div>
+                {machine.fields.brand && (
+                  <div>
+                    <span className="text-muted-foreground">Brand:</span>
+                    <p className="font-medium">{machine.fields.brand}</p>
+                  </div>
+                )}
+                {machine.fields.model && (
+                  <div>
+                    <span className="text-muted-foreground">Model:</span>
+                    <p className="font-medium">{machine.fields.model}</p>
+                  </div>
+                )}
+                {machine.fields.year && (
+                  <div>
+                    <span className="text-muted-foreground">Year:</span>
+                    <p className="font-medium">{machine.fields.year}</p>
+                  </div>
+                )}
+                {machine.fields.condition && (
+                  <div>
+                    <span className="text-muted-foreground">Condition:</span>
+                    <p className="font-medium">{machine.fields.condition}</p>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
@@ -522,9 +636,9 @@ export default function ProductDetailPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground leading-relaxed">
-                  {machine.description}
-                </p>
+                <div className="text-muted-foreground leading-relaxed whitespace-pre-wrap">
+                  {description}
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
@@ -538,18 +652,24 @@ export default function ProductDetailPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {Object.entries(machine.specifications).map(
-                    ([key, value]) => (
+                {Object.keys(specifications).length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {Object.entries(specifications).map(([key, value]) => (
                       <div
                         key={key}
                         className="flex justify-between items-center py-2 border-b">
                         <span className="font-medium">{key}:</span>
-                        <span className="text-muted-foreground">{value}</span>
+                        <span className="text-muted-foreground">
+                          {String(value)}
+                        </span>
                       </div>
-                    )
-                  )}
-                </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-muted-foreground">
+                    No specifications available for this machine.
+                  </p>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
@@ -563,20 +683,24 @@ export default function ProductDetailPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {Object.entries(machine.technicalDetails).map(
-                    ([key, value]) => (
+                {Object.keys(technicalDetails).length > 0 ? (
+                  <div className="space-y-4">
+                    {Object.entries(technicalDetails).map(([key, value]) => (
                       <div
                         key={key}
                         className="flex flex-col sm:flex-row sm:justify-between py-3 border-b">
                         <span className="font-medium mb-1 sm:mb-0">{key}:</span>
                         <span className="text-muted-foreground sm:text-right">
-                          {value}
+                          {String(value)}
                         </span>
                       </div>
-                    )
-                  )}
-                </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-muted-foreground">
+                    No technical details available for this machine.
+                  </p>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
@@ -590,14 +714,20 @@ export default function ProductDetailPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <ul className="space-y-3">
-                  {machine.advantages.map((advantage, index) => (
-                    <li key={index} className="flex items-start gap-3">
-                      <div className="w-2 h-2 bg-accent rounded-full mt-2 flex-shrink-0"></div>
-                      <span className="text-muted-foreground">{advantage}</span>
-                    </li>
-                  ))}
-                </ul>
+                {advantages.length > 0 ? (
+                  <ul className="space-y-3">
+                    {advantages.map((advantage, index) => (
+                      <li key={index} className="flex items-start gap-3">
+                        <div className="w-2 h-2 bg-accent rounded-full mt-2 flex-shrink-0"></div>
+                        <span className="text-muted-foreground">{advantage}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-muted-foreground">
+                    No advantages listed for this machine.
+                  </p>
+                )}
               </CardContent>
             </Card>
           </TabsContent>

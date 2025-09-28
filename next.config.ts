@@ -5,6 +5,9 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  images: {
+    domains: ["images.ctfassets.net"],
+  },
 };
 
 export default nextConfig;

@@ -28,6 +28,7 @@ export interface ContentfulAsset {
     };
     fields: {
       name: string;
+      slug: string;
       brand: string;
       model: string;
       category: string;
