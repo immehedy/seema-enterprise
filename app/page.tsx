@@ -18,6 +18,7 @@ import {
   Phone,
   Mail,
 } from "lucide-react";
+import Link from "next/link";
 
 export default function HomePage() {
   const featuredProducts = [
@@ -110,7 +111,7 @@ export default function HomePage() {
             <div className="space-y-8">
               <div className="space-y-4">
                 <Badge variant="secondary" className="w-fit">
-                  Trusted Since 1995
+                  Trusted Since 1992
                 </Badge>
                 <h1 className="text-4xl lg:text-6xl font-bold text-balance leading-tight">
                   Premium Printing & Paper Converting{" "}
@@ -124,16 +125,21 @@ export default function HomePage() {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button size="lg" className="text-lg px-8">
-                  Browse Stock Catalogue
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="lg"
-                  className="text-lg px-8 bg-transparent">
-                  Request Quote
-                </Button>
+                <Link href="/stock" passHref>
+                  <Button size="lg" className="text-lg px-8">
+                    Browse Stock Catalogue
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                </Link>
+
+                <Link href="/contact" passHref>
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    className="text-lg px-8 bg-transparent">
+                    Request Quote
+                  </Button>
+                </Link>
               </div>
 
               <div className="flex items-center gap-8 pt-4">
@@ -157,7 +163,7 @@ export default function HomePage() {
             <div className="relative">
               <div className="aspect-[4/3] rounded-2xl overflow-hidden bg-muted">
                 <img
-                  src="/placeholder.jpg"
+                  src="/seema-hero.jpg"
                   alt="Modern printing machinery in operation"
                   className="w-full h-full object-cover"
                 />
@@ -171,7 +177,7 @@ export default function HomePage() {
                   </div>
                   <div>
                     <p className="font-semibold text-sm">
-                      500+ Happy Customers
+                      1000+ Happy Customers
                     </p>
                     <div className="flex items-center gap-1">
                       {[...Array(5)].map((_, i) => (
@@ -253,7 +259,7 @@ export default function HomePage() {
                   <div className="flex items-start justify-between">
                     <div>
                       <CardTitle className="text-lg leading-tight group-hover:text-accent transition-colors">
-                        {product.name}
+                        <Link href={`/stock/${product.id}`}>{product.name}</Link>
                       </CardTitle>
                       <CardDescription className="text-sm">
                         {product.category}

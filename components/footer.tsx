@@ -21,7 +21,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Company Info */}
           <div className="space-y-2">
-            <Link href="/" className="flex items-center space-x-3">
+            <Link href="/" className="flex items-center">
               <Image
                 src="/logo.png"
                 alt="Seema Enterprise Logo"

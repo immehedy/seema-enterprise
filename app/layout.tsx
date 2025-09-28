@@ -9,8 +9,16 @@ import "./globals.css"
 export const metadata: Metadata = {
   title: "Seema Enterprise - Printing & Paper Converting Machinery",
   description:
-    "Leading supplier of printing and paper-converting machinery, consumables, and services. Quality equipment and reliable support since 1995.",
-  generator: "v0.app",
+    "Leading supplier of printing and paper-converting machinery, consumables, and services. Quality equipment and reliable support since 1992.",
+    icons: {
+      icon: [
+        { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+        { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      ],
+      apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
+    },
+  manifest: "/site.webmanifest",
+  generator: "fourbit.io",
   keywords: "printing machinery, paper converting, industrial equipment, machinery supplier, printing equipment",
 }
 

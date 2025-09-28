@@ -1,6 +1,7 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useEffect, useState, useMemo } from "react"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -9,138 +10,26 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { Search, Filter, Grid, List, SlidersHorizontal, Eye, Heart, Phone } from "lucide-react"
-import Link from "next/link"
+import { contentfulClient } from "@/lib/contentful"
 
-// Mock data for the stock catalogue
-const stockData = [
-  {
-    id: 1,
-    name: "Heidelberg Speedmaster SM 74-4",
-    brand: "Heidelberg",
-    model: "SM 74-4",
-    category: "Offset Printing Press",
-    year: 2018,
-    condition: "Excellent",
-    price: 450000,
-    location: "Mumbai, India",
-    image: "/placeholder.jpg",
-    features: ["4-Color", "Auto Plate Loading", "CIP4 Compatible", "Perfecting"],
-    specifications: {
-      maxSheetSize: "520 x 740 mm",
-      minSheetSize: "210 x 297 mm",
-      maxSpeed: "15000 sph",
-      colors: 4,
-    },
-    isAvailable: true,
-    isFeatured: true,
-  },
-  {
-    id: 2,
-    name: "Komori Lithrone L540",
-    brand: "Komori",
-    model: "L540",
-    category: "Sheet-fed Press",
-    year: 2020,
-    condition: "Like New",
-    price: 680000,
-    location: "Delhi, India",
-    image: "/placeholder.jpg",
-    features: ["5-Color", "UV Capability", "High Speed", "Auto Wash"],
-    specifications: {
-      maxSheetSize: "540 x 750 mm",
-      minSheetSize: "210 x 297 mm",
-      maxSpeed: "16500 sph",
-      colors: 5,
-    },
-    isAvailable: true,
-    isFeatured: true,
-  },
-  {
-    id: 3,
-    name: "Bobst Die Cutter SP 102-E",
-    brand: "Bobst",
-    model: "SP 102-E",
-    category: "Die Cutting Machine",
-    year: 2019,
-    condition: "Very Good",
-    price: 320000,
-    location: "Chennai, India",
-    image: "/placeholder.jpg",
-    features: ["Automatic", "Stripping Unit", "High Precision", "Touch Screen"],
-    specifications: {
-      maxSheetSize: "1020 x 720 mm",
-      minSheetSize: "320 x 230 mm",
-      maxSpeed: "7500 sph",
-      colors: 1,
-    },
-    isAvailable: true,
-    isFeatured: false,
-  },
-  {
-    id: 4,
-    name: "Stahl Folder KH 82",
-    brand: "Stahl",
-    model: "KH 82",
-    category: "Folding Machine",
-    year: 2021,
-    condition: "Excellent",
-    price: 180000,
-    location: "Bangalore, India",
-    image: "/placeholder.jpg",
-    features: ["8 Fold Plates", "Touch Screen", "Auto Setup", "High Speed"],
-    specifications: {
-      maxSheetSize: "820 x 1200 mm",
-      minSheetSize: "105 x 148 mm",
-      maxSpeed: "45000 sph",
-      colors: 1,
-    },
-    isAvailable: true,
-    isFeatured: true,
-  },
-  {
-    id: 5,
-    name: "Manroland R700",
-    brand: "Manroland",
-    model: "R700",
-    category: "Offset Printing Press",
-    year: 2017,
-    condition: "Good",
-    price: 380000,
-    location: "Pune, India",
-    image: "/placeholder.jpg",
-    features: ["6-Color", "Perfecting", "Auto Wash", "CIP4"],
-    specifications: {
-      maxSheetSize: "700 x 1000 mm",
-      minSheetSize: "210 x 297 mm",
-      maxSpeed: "13000 sph",
-      colors: 6,
-    },
-    isAvailable: true,
-    isFeatured: false,
-  },
-  {
-    id: 6,
-    name: "Polar Cutter 92 EM",
-    brand: "Polar",
-    model: "92 EM",
-    category: "Cutting Machine",
-    year: 2020,
-    condition: "Excellent",
-    price: 95000,
-    location: "Kolkata, India",
-    image: "/placeholder.jpg",
-    features: ["Programmable", "Safety Light Curtain", "Air Table", "Touch Screen"],
-    specifications: {
-      maxSheetSize: "920 x 1300 mm",
-      minSheetSize: "90 x 90 mm",
-      maxSpeed: "N/A",
-      colors: 1,
-    },
-    isAvailable: false,
-    isFeatured: false,
-  },
-]
+// ----------- TypeScript interface for a Machine ----------
+interface Machine {
+  name: string
+  brand: string
+  model: string
+  category: string
+  year: number
+  condition: string
+  price: number
+  location: string
+  features: string[]
+  specifications: Record<string, any>
+  isAvailable: boolean
+  isFeatured: boolean
+  images?: { url: string }[]
+}
 
+// ----------- Filters data ----------
 const categories = [
   "All Categories",
   "Offset Printing Press",
@@ -154,6 +43,10 @@ const conditions = ["All Conditions", "Like New", "Excellent", "Very Good", "Goo
 const years = ["All Years", "2021", "2020", "2019", "2018", "2017"]
 
 export default function StockPage() {
+  const [machines, setMachines] = useState<Machine[]>([])
+  const [loading, setLoading] = useState(true)
+
+  // Filters state
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("All Categories")
   const [selectedBrand, setSelectedBrand] = useState("All Brands")
@@ -165,18 +58,49 @@ export default function StockPage() {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
   const [sortBy, setSortBy] = useState("name")
 
+  // Fetch machines from Contentful
+  useEffect(() => {
+    const fetchMachines = async () => {
+      try {
+        const entries = await contentfulClient.getEntries({
+          content_type: "printingMachine",
+        })
+
+        const mapped = entries.items.map((entry: any) => {
+          const fields = entry.fields
+          return {
+            ...fields,
+            images: (fields.images || []).map((img: any) => ({
+              url: img?.fields?.file?.url
+                ? "https:" + img.fields.file.url
+                : "/placeholder.jpg",
+            })),
+          }
+        }) as Machine[]
+
+        setMachines(mapped)
+      } catch (error) {
+        console.error("Error fetching machines from Contentful:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchMachines()
+  }, [])
+
   const filteredStock = useMemo(() => {
-    const filtered = stockData.filter((item) => {
+    const filtered = machines.filter((item) => {
       const matchesSearch =
-        item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.model.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.category.toLowerCase().includes(searchTerm.toLowerCase())
+        item.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.brand?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.model?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.category?.toLowerCase().includes(searchTerm.toLowerCase())
 
       const matchesCategory = selectedCategory === "All Categories" || item.category === selectedCategory
       const matchesBrand = selectedBrand === "All Brands" || item.brand === selectedBrand
       const matchesCondition = selectedCondition === "All Conditions" || item.condition === selectedCondition
-      const matchesYear = selectedYear === "All Years" || item.year.toString() === selectedYear
+      const matchesYear = selectedYear === "All Years" || item.year?.toString() === selectedYear
 
       const matchesPriceMin = !priceRange.min || item.price >= Number.parseInt(priceRange.min)
       const matchesPriceMax = !priceRange.max || item.price <= Number.parseInt(priceRange.max)
@@ -197,7 +121,7 @@ export default function StockPage() {
       )
     })
 
-    // Sort the filtered results
+    // Sort
     filtered.sort((a, b) => {
       switch (sortBy) {
         case "price-low":
@@ -208,7 +132,6 @@ export default function StockPage() {
           return b.year - a.year
         case "year-old":
           return a.year - b.year
-        case "name":
         default:
           return a.name.localeCompare(b.name)
       }
@@ -216,6 +139,7 @@ export default function StockPage() {
 
     return filtered
   }, [
+    machines,
     searchTerm,
     selectedCategory,
     selectedBrand,
@@ -238,17 +162,16 @@ export default function StockPage() {
     setShowFeaturedOnly(false)
   }
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("en-IN", {
-      style: "currency",
-      currency: "USD",
-      minimumFractionDigits: 0,
-    }).format(price)
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-20 text-center">
+        <p>Loading machines from Contentful...</p>
+      </div>
+    )
   }
 
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl lg:text-4xl font-bold mb-4">Stock Catalogue</h1>
         <p className="text-xl text-muted-foreground">
@@ -259,7 +182,6 @@ export default function StockPage() {
       {/* Search and Filters */}
       <div className="mb-8">
         <div className="flex flex-col lg:flex-row gap-4 mb-6">
-          {/* Search Bar */}
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
@@ -270,7 +192,6 @@ export default function StockPage() {
             />
           </div>
 
-          {/* Mobile Filter Toggle */}
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="outline" className="lg:hidden bg-transparent">
@@ -335,7 +256,7 @@ export default function StockPage() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <div>
           <p className="text-muted-foreground">
-            Showing {filteredStock.length} of {stockData.length} machines
+            Showing {filteredStock.length} of {machines.length} machines
           </p>
         </div>
         <div className="flex items-center gap-4">
@@ -388,8 +309,8 @@ export default function StockPage() {
         </Card>
       ) : (
         <div className={viewMode === "grid" ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" : "space-y-4"}>
-          {filteredStock.map((machine) => (
-            <MachineCard key={machine.id} machine={machine} viewMode={viewMode} />
+          {filteredStock.map((machine, idx) => (
+            <MachineCard key={idx} machine={machine} viewMode={viewMode} />
           ))}
         </div>
       )}
@@ -397,6 +318,7 @@ export default function StockPage() {
   )
 }
 
+// ------------- FilterControls -------------
 function FilterControls({
   selectedCategory,
   setSelectedCategory,
@@ -413,23 +335,7 @@ function FilterControls({
   showFeaturedOnly,
   setShowFeaturedOnly,
   clearFilters,
-}: {
-  selectedCategory: string
-  setSelectedCategory: (value: string) => void
-  selectedBrand: string
-  setSelectedBrand: (value: string) => void
-  selectedCondition: string
-  setSelectedCondition: (value: string) => void
-  selectedYear: string
-  setSelectedYear: (value: string) => void
-  priceRange: { min: string; max: string }
-  setPriceRange: (value: { min: string; max: string }) => void
-  showAvailableOnly: boolean
-  setShowAvailableOnly: (value: boolean) => void
-  showFeaturedOnly: boolean
-  setShowFeaturedOnly: (value: boolean) => void
-  clearFilters: () => void
-}) {
+}: any) {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -542,7 +448,8 @@ function FilterControls({
   )
 }
 
-function MachineCard({ machine, viewMode }: { machine: any; viewMode: "grid" | "list" }) {
+// ------------- MachineCard -------------
+function MachineCard({ machine, viewMode }: { machine: Machine; viewMode: "grid" | "list" }) {
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("en-IN", {
       style: "currency",
@@ -551,6 +458,8 @@ function MachineCard({ machine, viewMode }: { machine: any; viewMode: "grid" | "
     }).format(price)
   }
 
+  const imageUrl = machine.images?.[0]?.url || "/placeholder.jpg"
+
   if (viewMode === "list") {
     return (
       <Card className="hover:shadow-lg transition-shadow">
@@ -558,7 +467,7 @@ function MachineCard({ machine, viewMode }: { machine: any; viewMode: "grid" | "
           <div className="flex flex-col md:flex-row gap-6">
             <div className="relative w-full md:w-48 h-32 flex-shrink-0">
               <img
-                src={machine.image || "/placeholder.svg"}
+                src={imageUrl}
                 alt={machine.name}
                 className="w-full h-full object-cover rounded-lg"
               />
@@ -575,7 +484,7 @@ function MachineCard({ machine, viewMode }: { machine: any; viewMode: "grid" | "
               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
                 <div>
                   <h3 className="text-xl font-semibold hover:text-accent transition-colors">
-                    <Link href={`/stock/${machine.id}`}>{machine.name}</Link>
+                    <Link href={`/stock/${machine.name}`}>{machine.name}</Link>
                   </h3>
                   <p className="text-muted-foreground">{machine.category}</p>
                 </div>
@@ -587,7 +496,7 @@ function MachineCard({ machine, viewMode }: { machine: any; viewMode: "grid" | "
               <div className="flex flex-wrap gap-2">
                 <Badge variant="outline">{machine.year}</Badge>
                 <Badge variant="secondary">{machine.condition}</Badge>
-                {machine.features.slice(0, 3).map((feature: any, index: any) => (
+                {machine.features.slice(0, 3).map((feature, index) => (
                   <Badge key={index} variant="outline" className="text-xs">
                     {feature}
                   </Badge>
@@ -595,7 +504,7 @@ function MachineCard({ machine, viewMode }: { machine: any; viewMode: "grid" | "
               </div>
               <div className="flex flex-col sm:flex-row gap-2">
                 <Button size="sm" className="flex-1" asChild>
-                  <Link href={`/stock/${machine.id}`}>
+                  <Link href={`/stock/${machine.name}`}>
                     <Eye className="h-4 w-4 mr-2" />
                     View Details
                   </Link>
@@ -615,11 +524,12 @@ function MachineCard({ machine, viewMode }: { machine: any; viewMode: "grid" | "
     )
   }
 
+  // Grid view
   return (
     <Card className="group hover:shadow-lg transition-shadow">
       <div className="relative">
         <img
-          src={machine.image || "/placeholder.svg"}
+          src={imageUrl}
           alt={machine.name}
           className="w-full h-48 object-cover rounded-t-lg"
         />
@@ -643,7 +553,7 @@ function MachineCard({ machine, viewMode }: { machine: any; viewMode: "grid" | "
         <div className="flex items-start justify-between">
           <div className="flex-1">
             <CardTitle className="text-lg leading-tight group-hover:text-accent transition-colors">
-              <Link href={`/stock/${machine.id}`}>{machine.name}</Link>
+              <Link href={`/stock/${machine.name}`}>{machine.name}</Link>
             </CardTitle>
             <CardDescription className="text-sm">{machine.category}</CardDescription>
           </div>
@@ -660,7 +570,7 @@ function MachineCard({ machine, viewMode }: { machine: any; viewMode: "grid" | "
       <CardContent className="pt-0">
         <div className="space-y-3">
           <div className="flex flex-wrap gap-1">
-            {machine.features.slice(0, 3).map((feature: any, index: any) => (
+            {machine.features.slice(0, 3).map((feature, index) => (
               <Badge key={index} variant="outline" className="text-xs">
                 {feature}
               </Badge>
@@ -674,7 +584,7 @@ function MachineCard({ machine, viewMode }: { machine: any; viewMode: "grid" | "
           </div>
           <div className="flex gap-2">
             <Button size="sm" className="flex-1" asChild>
-              <Link href={`/stock/${machine.id}`}>
+              <Link href={`/stock/${machine.name}`}>
                 <Eye className="h-4 w-4 mr-1" />
                 View
               </Link>

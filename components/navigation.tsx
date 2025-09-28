@@ -37,7 +37,7 @@ export function Navigation() {
 
         {/* Main navigation */}
         <div className="flex h-16 items-center justify-between">
-          <Link href="/" className="flex items-center space-x-3">
+          <Link href="/" className="flex items-center">
             <Image
               src="/logo.png"
               alt="Seema Enterprise Logo"
@@ -46,6 +46,12 @@ export function Navigation() {
               className="h-16 w-16 object-contain rounded-md"
               priority
             />
+            <div className="flex flex-col">
+              <span className="font-bold text-lg leading-none">
+                Seema Enterprise
+              </span>
+              <span className="text-xs text-muted-foreground">Since 1992</span>
+            </div>
           </Link>
 
           {/* Desktop Navigation */}
