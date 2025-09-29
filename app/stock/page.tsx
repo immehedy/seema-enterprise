@@ -556,7 +556,7 @@ function MachineCard({
                 alt={machine.name}
                 width={800} // replace with actual width if known
                 height={600} // replace with actual height if known
-                className="w-full h-full object-cover rounded-lg"
+                className="w-full h-full object-cover rounded-lg -mt-6"
                 style={{ objectFit: "cover" }}
               />
               {machine.isFeatured && (
@@ -630,7 +630,7 @@ function MachineCard({
           alt={machine.name}
           width={800} // or your known width
           height={192} // h-48 = 12rem = 192px
-          className="w-full h-48 object-cover rounded-t-lg"
+          className="w-full h-48 object-cover rounded-t-lg -mt-6"
           style={{ objectFit: "cover" }}
         />
         {machine.isFeatured && (
