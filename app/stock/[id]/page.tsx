@@ -282,7 +282,7 @@ export default function ProductDetailPage() {
                 <img
                   src={images[currentImageIndex]}
                   alt={`${machine.fields.name} - Image ${currentImageIndex + 1}`}
-                  className="w-full h-96 lg:h-[500px] object-cover rounded-t-lg"
+                  className="w-full h-96 lg:h-[500px] object-cover rounded-t-lg -mt-6"
                   onError={(e) => {
                     e.currentTarget.src = '/placeholder.svg';
                   }}

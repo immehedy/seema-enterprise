@@ -243,7 +243,7 @@ export default function HomePage() {
                     alt={product.name}
                     width={800}
                     height={400}
-                    className="w-full h-48 sm:h-56 lg:h-48 object-cover rounded-t-lg"
+                    className="w-full h-48 sm:h-56 lg:h-48 object-cover rounded-t-lg -mt-6"
                   />
                   {product.isNew && (
                     <Badge className="absolute top-3 left-3 bg-accent text-accent-foreground">
