@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import HeroSection from "@/components/hero";
 
 export default function HomePage() {
   const featuredProducts = [
@@ -106,99 +107,10 @@ export default function HomePage() {
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-muted/30 to-muted/60 py-12 sm:py-16 lg:py-20">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Left Side */}
-            <div className="space-y-8">
-              <div className="space-y-4">
-                <Badge variant="secondary" className="w-fit">
-                  Trusted Since 1992
-                </Badge>
-                <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold leading-tight">
-                  Premium Printing & Paper Converting{" "}
-                  <span className="text-accent">Machinery</span>
-                </h1>
-                <p className="text-base sm:text-lg lg:text-xl text-muted-foreground leading-relaxed">
-                  Your trusted partner for high-quality printing and
-                  paper-converting equipment. From offset presses to finishing
-                  machines, we supply the industry's best machinery worldwide.
-                </p>
-              </div>
-
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link href="/stock" passHref>
-                  <Button size="lg" className="text-base sm:text-lg px-6 sm:px-8">
-                    Browse Stock Catalogue
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </Button>
-                </Link>
-                <Link href="/contact" passHref>
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    className="text-base sm:text-lg px-6 sm:px-8 bg-transparent">
-                    Request Quote
-                  </Button>
-                </Link>
-              </div>
-
-              <div className="flex flex-wrap gap-4 pt-4">
-                {["Quality Guaranteed", "Global Shipping", "Expert Support"].map(
-                  (item, i) => (
-                    <div key={i} className="flex items-center gap-2">
-                      <CheckCircle className="h-5 w-5 text-accent" />
-                      <span className="text-sm font-medium">{item}</span>
-                    </div>
-                  )
-                )}
-              </div>
-            </div>
-
-            {/* Right Side */}
-            <div className="relative">
-              <div className="aspect-[4/3] rounded-2xl overflow-hidden bg-muted">
-                <Image
-                  src="/seema-hero.jpg"
-                  alt="Modern printing machinery in operation"
-                  fill
-                  className="object-cover"
-                  sizes="100vw"
-                  priority
-                />
-              </div>
-              <div className="absolute -bottom-6 -left-4 sm:-left-6 bg-background border rounded-xl p-4 shadow-lg w-[90%] sm:w-auto">
-                <div className="flex items-center gap-3">
-                  <div className="flex -space-x-2">
-                    <div className="w-8 h-8 rounded-full bg-accent"></div>
-                    <div className="w-8 h-8 rounded-full bg-primary"></div>
-                    <div className="w-8 h-8 rounded-full bg-secondary"></div>
-                  </div>
-                  <div>
-                    <p className="font-semibold text-sm">
-                      1000+ Happy Customers
-                    </p>
-                    <div className="flex items-center gap-1">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className="h-3 w-3 fill-yellow-400 text-yellow-400"
-                        />
-                      ))}
-                      <span className="text-xs text-muted-foreground ml-1">
-                        4.9/5
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <HeroSection />
 
       {/* Stats Section */}
-      <section className="py-12 sm:py-16 bg-primary text-primary-foreground">
+      <section className="py-12 sm:py-16 bg-accent text-primary-foreground">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
@@ -220,7 +132,7 @@ export default function HomePage() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <Badge variant="secondary" className="mb-4">
-              Featured Equipment
+              New Arrivals
             </Badge>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4">
               Latest Arrivals & Premium Machinery
@@ -233,71 +145,40 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            {featuredProducts.map((product) => (
+            {featuredProducts.map((product, index) => (
               <Card
-                key={product.id}
-                className="group hover:shadow-lg transition-shadow">
+                key={index}
+                className="group hover:shadow-lg transition-shadow flex flex-col h-full">
                 <div className="relative">
-                  <Image
-                    src={product.image || "/placeholder.svg"}
+                  <img
+                    src={
+                      product.image ||
+                      "https://images.unsplash.com/photo-1563906267088-b029e7101114?w=800&h=400&fit=crop"
+                    }
                     alt={product.name}
-                    width={800}
-                    height={400}
                     className="w-full h-48 sm:h-56 lg:h-48 object-cover rounded-t-lg -mt-6"
                   />
-                  {product.isNew && (
-                    <Badge className="absolute top-3 left-3 bg-accent text-accent-foreground">
-                      New Arrival
-                    </Badge>
-                  )}
-                  <Badge
-                    variant="secondary"
-                    className="absolute top-3 right-3 bg-background/90 text-foreground">
-                    {product.condition}
-                  </Badge>
                 </div>
-                <CardHeader className="pb-3">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <CardTitle className="text-base sm:text-lg leading-tight group-hover:text-accent transition-colors">
-                        <Link href={`/stock/${product.id}`}>
-                          {product.name}
-                        </Link>
-                      </CardTitle>
-                      <CardDescription className="text-xs sm:text-sm">
-                        {product.category}
-                      </CardDescription>
-                    </div>
-                    <Badge variant="outline" className="text-xs">
-                      {product.year}
-                    </Badge>
-                  </div>
-                </CardHeader>
-                <CardContent className="pt-0">
-                  <div className="space-y-3">
-                    <div className="flex flex-wrap gap-1">
-                      {product.features.map((feature, index) => (
-                        <Badge
-                          key={index}
-                          variant="secondary"
-                          className="text-xs">
-                          {feature}
-                        </Badge>
-                      ))}
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="font-semibold text-accent">
-                        {product.price}
-                      </span>
+
+                {/* Wrapper to control flex layout */}
+                <div className="flex flex-col flex-grow">
+                  <CardHeader className="pb-3 flex-grow">
+                    <CardTitle className="text-base sm:text-lg leading-tight group-hover:text-blue-600 transition-colors">
+                      <a href={`/stock/${product.id}`}>{product.name}</a>
+                    </CardTitle>
+                  </CardHeader>
+
+                  <CardContent className="pt-4">
+                    <Link href="/stock">
                       <Button
                         size="sm"
                         variant="outline"
-                        className="bg-transparent">
+                        className="bg-transparent w-full">
                         View Details
                       </Button>
-                    </div>
-                  </div>
-                </CardContent>
+                    </Link>
+                  </CardContent>
+                </div>
               </Card>
             ))}
           </div>
@@ -362,7 +243,10 @@ export default function HomePage() {
                 right equipment for your specific needs and budget.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button size="lg" variant="secondary" className="text-base sm:text-lg px-6 sm:px-8">
+                <Button
+                  size="lg"
+                  variant="secondary"
+                  className="text-base sm:text-lg px-6 sm:px-8">
                   <Phone className="mr-2 h-5 w-5" />
                   Call Now: +880 1711-871147
                 </Button>

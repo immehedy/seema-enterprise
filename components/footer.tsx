@@ -21,24 +21,16 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Company Info */}
           <div className="space-y-2">
-            <Link href="/" className="flex items-center">
+            {/* <Link href="/" className="block">
               <Image
-                src="/logo.svg"
-                alt="Seema Enterprise Logo"
-                width={40}
-                height={40}
-                className="h-16 w-16 object-contain rounded-md"
-                priority
+                src="/logo_trimmed.svg"
+                alt="Seema Enterprise"
+                width={200}
+                height={60}
+                className="h-auto w-auto object-contain"
               />
-              <div className="flex flex-col">
-                <span className="font-bold text-lg leading-none">
-                  Seema Enterprise
-                </span>
-                <span className="text-xs text-muted-foreground">
-                  Since 1992
-                </span>
-              </div>
-            </Link>
+            </Link> */}
+
             <p className="text-sm text-muted-foreground">
               Leading supplier of offset printing and paper-converting
               machinery. Trusted across Bangladesh and globally for reliable
