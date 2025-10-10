@@ -4,16 +4,62 @@ import Link from "next/link";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, Phone, Mail, Globe } from "lucide-react";
+import { Menu, Phone, Mail, Globe, ChevronDown } from "lucide-react";
 import Image from "next/image";
 
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isMachinesOpen, setIsMachinesOpen] = useState(false);
+  const [isMobileDropdownOpen, setIsMobileDropdownOpen] = useState(false);
 
   const navItems = [
     { href: "/", label: "Home" },
     { href: "/about", label: "About Us" },
-    { href: "/machines", label: "Machines" },
+  ];
+
+  // Define your machine categories organized by columns
+  const machineColumns = [
+    {
+      title: "Post-Press",
+      items: [
+        { href: "/machines/post-press/4850-offers", label: "4850 Offers" },
+        { href: "/machines/post-press/shredder", label: "Shredder" },
+        { href: "/machines/post-press/finishing-machines", label: "Finishing Machines" },
+        { href: "/machines/post-press/bookbinding-production", label: "Bookbinding + Production" },
+        { href: "/machines/post-press/folding-machines", label: "Folding Machines" },
+        { href: "/machines/post-press/cutting-die-cutting", label: "Cutting + Die-Cutting" },
+        { href: "/machines/post-press/packing-handling", label: "Packing + Handling" },
+        { href: "/machines/post-press/logistics", label: "Logistics" },
+      ],
+    },
+    {
+      title: "Pre-Press",
+      items: [
+        { href: "/machines/pre-press/303-offers", label: "303 Offers" },
+        { href: "/machines/pre-press/digital-proofing", label: "Digital Proofing Systems" },
+        { href: "/machines/pre-press/step-repeat", label: "Step & Repeat Machines" },
+        { href: "/machines/pre-press/plate-registration", label: "Plate Registration" },
+        { href: "/machines/pre-press/ctp", label: "CTP (Computer to Plate)" },
+        { href: "/machines/pre-press/digital-punch", label: "Digital Punch" },
+      ],
+    },
+    {
+      title: "Printing Machines",
+      items: [
+        { href: "/machines/printing/5281-offers", label: "5281 Offers" },
+        { href: "/machines/printing/proof-presses", label: "Proof Presses" },
+        { href: "/machines/printing/envelope", label: "Envelope Printing Machines" },
+        { href: "/machines/printing/digital-sheet-feed", label: "Digital Sheet-Feed Printing Machines" },
+        { href: "/machines/printing/screen-printing", label: "Screen Printing Machines" },
+      ],
+    },
+  ];
+  
+
+  // Flatten for mobile view
+  const allMachineItems = machineColumns.flatMap(column => column.items);
+
+  const afterMachinesItems = [
     { href: "/news", label: "News" },
     { href: "/contact", label: "Contact" },
   ];
@@ -46,19 +92,63 @@ export function Navigation() {
                   </Link>
                 </li>
               ))}
+              
+              {/* Machines Dropdown - Desktop with Multiple Columns */}
+              <li 
+                className="relative"
+                onMouseEnter={() => setIsMachinesOpen(true)}
+                onMouseLeave={() => setIsMachinesOpen(false)}
+              >
+                <button className="flex items-center gap-1 py-3 px-3 hover:text-blue-700 transition-colors text-gray-700 font-normal">
+                  Machines
+                  <ChevronDown className={`h-4 w-4 transition-transform ${isMachinesOpen ? 'rotate-180' : ''}`} />
+                </button>
+                
+                {isMachinesOpen && (
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 bg-white shadow-lg rounded-md py-4 px-4">
+                    <div 
+                      className="grid gap-6"
+                      style={{ 
+                        gridTemplateColumns: `repeat(${machineColumns.length}, minmax(200px, 1fr))` 
+                      }}
+                    >
+                      {machineColumns.map((column, idx) => (
+                        <div key={idx} className="px-2 min-w-0">
+                          <h3 className="font-semibold text-sm text-gray-900 mb-3 px-2 text-wrap">
+                            {column.title}
+                          </h3>
+                          <div className="space-y-1">
+                            {column.items.map((machine) => (
+                              <Link
+                                key={machine.href}
+                                href={machine.href}
+                                className="block px-2 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-blue-700 transition-colors rounded text-wrap"
+                              >
+                                {machine.label}
+                              </Link>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </li>
+
+              {afterMachinesItems.map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className="block py-3 px-3 hover:text-blue-700 transition-colors text-gray-700 font-normal">
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
           {/* Language Selector & Contact Info - Desktop */}
           <div className="hidden lg:flex items-center pr-3 gap-4">
-            {/* Language Dropdown */}
-            {/* <div className="flex items-center">
-              <select className="text-sm font-medium text-gray-700 bg-transparent border-none cursor-pointer uppercase pr-2">
-                <option value="en">EN</option>
-                <option value="bn">BN</option>
-              </select>
-            </div> */}
-
             {/* Contact Info */}
             <div className="flex flex-col gap-0">
               <Link
@@ -143,18 +233,50 @@ export function Navigation() {
                       </Link>
                     </li>
                   ))}
-                </ul>
+                  
+                  {/* Machines Dropdown - Mobile (Grouped by Category) */}
+                  <li className="border-b">
+                    <button
+                      onClick={() => setIsMobileDropdownOpen(!isMobileDropdownOpen)}
+                      className="w-full flex items-center justify-between py-4 px-4 hover:bg-gray-50 text-gray-700"
+                    >
+                      <span>Machines</span>
+                      <ChevronDown className={`h-4 w-4 transition-transform ${isMobileDropdownOpen ? 'rotate-180' : ''}`} />
+                    </button>
+                    {isMobileDropdownOpen && (
+                      <div className="bg-gray-50">
+                        {machineColumns.map((column, idx) => (
+                          <div key={idx} className="border-t first:border-t-0">
+                            <div className="px-6 py-2 text-xs font-semibold text-gray-600 uppercase">
+                              {column.title}
+                            </div>
+                            {column.items.map((machine) => (
+                              <Link
+                                key={machine.href}
+                                href={machine.href}
+                                className="block py-3 px-8 hover:bg-gray-100 text-gray-600 text-sm"
+                                onClick={() => setIsOpen(false)}
+                              >
+                                {machine.label}
+                              </Link>
+                            ))}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </li>
 
-                {/* Language Selector - Mobile */}
-                {/* <div className="p-4 border-b">
-                  <div className="flex items-center gap-2">
-                    <Globe className="h-4 w-4 text-gray-600" />
-                    <select className="text-sm font-medium text-gray-700 bg-transparent border border-gray-300 rounded px-2 py-1 uppercase">
-                      <option value="en">English</option>
-                      <option value="bn">বাংলা</option>
-                    </select>
-                  </div>
-                </div> */}
+                  {afterMachinesItems.map((item) => (
+                    <li key={item.href} className="border-b">
+                      <Link
+                        href={item.href}
+                        className="block py-4 px-4 hover:bg-gray-50 text-gray-700"
+                        onClick={() => setIsOpen(false)}>
+                        {item.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
 
                 {/* Bottom spacing */}
                 <div className="h-32"></div>
