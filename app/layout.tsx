@@ -44,9 +44,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Suspense fallback={<div>Loading...</div>}>
-          {/* <div className="w-full md:w-[80%] mx-auto"> */}
+          <div className="mb-20">
           <Navigation />
-          {/* </div> */}
+          </div>
           <main className="min-h-screen">{children}</main>
           <Footer />
         </Suspense>

@@ -23,7 +23,7 @@ export default function ContactPage() {
     {
       icon: <Mail className="h-6 w-6" />,
       title: "Email",
-      details: ["info@seemaenterprisebdbd.com"],
+      details: ["info@seemaenterprisebd.com"],
       description: "Send us your requirements",
     },
     {
@@ -38,7 +38,7 @@ export default function ContactPage() {
     {
       icon: <Globe className="h-6 w-6" />,
       title: "Website",
-      details: ["http://www.seemaenterprisebdbd.com/"],
+      details: ["http://www.seemaenterprisebd.com/"],
       description: "Visit our website",
     },
   ];
@@ -48,14 +48,14 @@ export default function ContactPage() {
       city: "Dhaka (Headquarters)",
       address: "55/2, Farm'r Mor, Paradogair, Matuail, Jatrabari, Dhaka 1362",
       phone: "01711-871147",
-      email: "info@seemaenterprisebdbd.com",
+      email: "info@seemaenterprisebd.com",
       isHeadquarters: true,
     },
     {
       city: "Dhaka (Office)",
       address: "23, 3H Distilary Rd, Dhaka 1204",
       phone: "01711-871147",
-      email: "info@seemaenterprisebdbd.com",
+      email: "info@seemaenterprisebd.com",
       isHeadquarters: false,
     },
   ];

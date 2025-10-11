@@ -33,25 +33,11 @@ export interface ContentfulAsset {
       model: string;
       category: string;
       year: number;
-      condition: string;
-      price: number;
-      location: string;
+      size: string;
+      type: string;
+      refNo: number;
       images?: ContentfulAsset[];
-      features?: string[];
-      specifications?: Record<string, any>;
-      description?: {
-        nodeType: string;
-        content: any[];
-      };
-      advantages?: string[];
-      technicalDetails?: Record<string, any>;
+      specification?: Record<string, any>;
       isAvailable: boolean;
-      isFeatured: boolean;
-      seller?: {
-        name: string;
-        contact: string;
-        email: string;
-        location: string;
-      };
     };
   }

@@ -21,54 +21,46 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 import HeroSection from "@/components/hero";
+import { MachineEntry } from "@/types/contentful";
+import { contentfulClient } from "@/lib/contentful";
 
-export default function HomePage() {
-  const featuredProducts = [
-    {
-      id: 1,
-      name: "Heidelberg Speedmaster SM 74-4",
-      category: "Offset Printing Press",
-      year: "2018",
-      condition: "Excellent",
-      price: "Contact for Price",
-      image: "/placeholder.jpg",
-      features: ["4-Color", "Auto Plate Loading", "CIP4 Compatible"],
-      isNew: false,
-    },
-    {
-      id: 2,
-      name: "Komori Lithrone L540",
-      category: "Sheet-fed Press",
-      year: "2020",
-      condition: "Like New",
-      price: "Contact for Price",
-      image: "/placeholder.jpg",
-      features: ["5-Color", "UV Capability", "High Speed"],
-      isNew: true,
-    },
-    {
-      id: 3,
-      name: "Bobst Die Cutter SP 102-E",
-      category: "Die Cutting Machine",
-      year: "2019",
-      condition: "Very Good",
-      price: "Contact for Price",
-      image: "/placeholder.jpg",
-      features: ["Automatic", "Stripping Unit", "High Precision"],
-      isNew: false,
-    },
-    {
-      id: 4,
-      name: "Stahl Folder KH 82",
-      category: "Folding Machine",
-      year: "2021",
-      condition: "Excellent",
-      price: "Contact for Price",
-      image: "/placeholder.jpg",
-      features: ["8 Fold Plates", "Touch Screen", "Auto Setup"],
-      isNew: true,
-    },
-  ];
+// Server-side data fetching function
+async function getMachines(): Promise<any[]> {
+  try {
+    const entries = await contentfulClient.getEntries({
+      content_type: "machine",
+    });
+    
+    const mapped = entries.items.map((entry: any) => {
+      const fields = entry.fields;
+      return {
+        ...fields,
+        images: (fields.images || []).map((img: any) => ({
+          url: img?.fields?.file?.url
+            ? "https:" + img.fields.file.url
+            : "/placeholder.jpg",
+        })),
+        category: fields?.category?.fields?.name,
+        createdAt: entry?.sys?.createdAt,
+      };
+    }) as any[];
+
+    return mapped;
+  } catch (error) {
+    console.error("Error fetching machines from Contentful:", error);
+    return [];
+  }
+}
+
+export default async function HomePage() {
+  // Fetch machines on the server
+  const machines = await getMachines();
+
+
+  // Sort by creation date (newest first) and show only the latest 5
+  const featuredProducts = machines
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    .slice(0, 5);
 
   const services = [
     {
@@ -147,12 +139,12 @@ export default function HomePage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
             {featuredProducts.map((product, index) => (
               <Card
-                key={index}
+                key={product.slug || index}
                 className="group hover:shadow-lg transition-shadow flex flex-col h-full">
                 <div className="relative">
                   <img
                     src={
-                      product.image ||
+                      product.images?.[0]?.url ||
                       "https://images.unsplash.com/photo-1563906267088-b029e7101114?w=800&h=400&fit=crop"
                     }
                     alt={product.name}
@@ -164,12 +156,12 @@ export default function HomePage() {
                 <div className="flex flex-col flex-grow">
                   <CardHeader className="pb-3 flex-grow">
                     <CardTitle className="text-base sm:text-lg leading-tight group-hover:text-blue-600 transition-colors">
-                      <a href={`/stock/${product.id}`}>{product.name}</a>
+                      <Link href={`/stock/${product.slug}`}>{product.name}</Link>
                     </CardTitle>
                   </CardHeader>
 
                   <CardContent className="pt-4">
-                    <Link href="/stock">
+                    <Link href={`/stock/${product.slug}`}>
                       <Button
                         size="sm"
                         variant="outline"
@@ -184,10 +176,12 @@ export default function HomePage() {
           </div>
 
           <div className="text-center">
-            <Button size="lg" variant="outline" className="bg-transparent">
-              View All Stock
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
+            <Link href="/stock">
+              <Button size="lg" variant="outline" className="bg-transparent">
+                View All Stock
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
           </div>
         </div>
       </section>

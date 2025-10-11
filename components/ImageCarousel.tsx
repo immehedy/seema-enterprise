@@ -21,7 +21,7 @@ const ImageCarousel = ({ slides }: any) => {
 
   return (
     <div className="relative group">
-      <div className="aspect-[16/10] rounded-lg overflow-hidden shadow-xl">
+      <div className="aspect-[2/1] rounded-lg overflow-hidden shadow-xl">
         {slides.map((slide:any, index: number) => (
           <div
             key={index}
