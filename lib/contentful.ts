@@ -65,6 +65,24 @@ export async function getAllMachines(): Promise<MachineEntry[]> {
   }
 }
 
+
+/**
+ * Fetch all Cateogories
+ */
+export async function getAllCategories(): Promise<any[]> {
+  try {
+    const response = await contentfulClient.getEntries({
+      content_type: 'category',
+      include: 2,
+    });
+    
+    return response.items as unknown as any[];
+  } catch (error) {
+    console.error('Error fetching all categories:', error);
+    return [];
+  }
+}
+
 /**
  * Helper function to convert rich text to plain text
  */

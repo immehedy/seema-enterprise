@@ -20,37 +20,21 @@ export function Navigation() {
   // Define your machine categories organized by columns
   const machineColumns = [
     {
-      title: "Post-Press",
-      items: [
-        { href: "/machines/post-press/4850-offers", label: "4850 Offers" },
-        { href: "/machines/post-press/shredder", label: "Shredder" },
-        { href: "/machines/post-press/finishing-machines", label: "Finishing Machines" },
-        { href: "/machines/post-press/bookbinding-production", label: "Bookbinding + Production" },
-        { href: "/machines/post-press/folding-machines", label: "Folding Machines" },
-        { href: "/machines/post-press/cutting-die-cutting", label: "Cutting + Die-Cutting" },
-        { href: "/machines/post-press/packing-handling", label: "Packing + Handling" },
-        { href: "/machines/post-press/logistics", label: "Logistics" },
-      ],
-    },
-    {
       title: "Pre-Press",
       items: [
-        { href: "/machines/pre-press/303-offers", label: "303 Offers" },
-        { href: "/machines/pre-press/digital-proofing", label: "Digital Proofing Systems" },
-        { href: "/machines/pre-press/step-repeat", label: "Step & Repeat Machines" },
-        { href: "/machines/pre-press/plate-registration", label: "Plate Registration" },
-        { href: "/machines/pre-press/ctp", label: "CTP (Computer to Plate)" },
-        { href: "/machines/pre-press/digital-punch", label: "Digital Punch" },
+        { href: "/stock", label: "All Machine" },
       ],
     },
     {
-      title: "Printing Machines",
+      title: "Post-Press",
       items: [
-        { href: "/machines/printing/5281-offers", label: "5281 Offers" },
-        { href: "/machines/printing/proof-presses", label: "Proof Presses" },
-        { href: "/machines/printing/envelope", label: "Envelope Printing Machines" },
-        { href: "/machines/printing/digital-sheet-feed", label: "Digital Sheet-Feed Printing Machines" },
-        { href: "/machines/printing/screen-printing", label: "Screen Printing Machines" },
+        { href: "/stock", label: "All Machine" },
+      ],
+    },
+    {
+      title: "Printing",
+      items: [
+        { href: "/stock", label: "All Machine" },
       ],
     },
   ];
@@ -81,7 +65,7 @@ export function Navigation() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center justify-center flex-1">
+          <div className="hidden lg:flex items-center justify-center flex-1">
             <ul className="flex items-center ml-4 space-x-0">
               {navItems.map((item) => (
                 <li key={item.href}>
@@ -104,7 +88,7 @@ export function Navigation() {
                   <ChevronDown className={`h-4 w-4 transition-transform ${isMachinesOpen ? 'rotate-180' : ''}`} />
                 </button>
                 
-                {isMachinesOpen && (
+                {isMachinesOpen && machineColumns?.length >= 0 && (
                   <div className="absolute top-full left-1/2 -translate-x-1/2 bg-white shadow-lg rounded-md py-4 px-4">
                     <div 
                       className="grid gap-6"
@@ -112,19 +96,19 @@ export function Navigation() {
                         gridTemplateColumns: `repeat(${machineColumns.length}, minmax(200px, 1fr))` 
                       }}
                     >
-                      {machineColumns.map((column, idx) => (
+                      {machineColumns?.map((column: any, idx: number) => (
                         <div key={idx} className="px-2 min-w-0">
                           <h3 className="font-semibold text-sm text-gray-900 mb-3 px-2 text-wrap">
                             {column.title}
                           </h3>
                           <div className="space-y-1">
-                            {column.items.map((machine) => (
+                            {column.items.map((machine: any) => (
                               <Link
-                                key={machine.href}
-                                href={machine.href}
+                                key={machine?.href}
+                                href={machine?.href}
                                 className="block px-2 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-blue-700 transition-colors rounded text-wrap"
                               >
-                                {machine.label}
+                                {machine?.label}
                               </Link>
                             ))}
                           </div>
@@ -245,12 +229,12 @@ export function Navigation() {
                     </button>
                     {isMobileDropdownOpen && (
                       <div className="bg-gray-50">
-                        {machineColumns.map((column, idx) => (
+                        {machineColumns.map((column: any, idx: any) => (
                           <div key={idx} className="border-t first:border-t-0">
                             <div className="px-6 py-2 text-xs font-semibold text-gray-600 uppercase">
                               {column.title}
                             </div>
-                            {column.items.map((machine) => (
+                            {column.items.map((machine: any) => (
                               <Link
                                 key={machine.href}
                                 href={machine.href}
