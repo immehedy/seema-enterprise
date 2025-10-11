@@ -11,11 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  Dialog,
-  DialogContent,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import {
   ArrowLeft,
   Heart,
@@ -26,14 +22,19 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { getMachineBySlug, richTextToPlainText, getImageUrl } from "@/lib/contentful";
+import {
+  getMachineBySlug,
+  richTextToPlainText,
+  getImageUrl,
+} from "@/lib/contentful";
 import type { MachineEntry } from "@/types/contentful";
 import { documentToHtmlString } from "@contentful/rich-text-html-renderer";
+import { DialogTitle } from "@radix-ui/react-dialog";
 
 export default function ProductDetailPage() {
   const params = useParams();
   const machineSlug = params.id as string;
-  
+
   const [machine, setMachine] = useState<MachineEntry | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -50,9 +51,9 @@ export default function ProductDetailPage() {
       try {
         setLoading(true);
         setError(null);
-        
+
         const machineData = await getMachineBySlug(machineSlug);
-        
+
         if (machineData) {
           setMachine(machineData);
         } else {
@@ -75,7 +76,9 @@ export default function ProductDetailPage() {
         <Card>
           <CardContent className="p-12 text-center">
             <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
-            <h1 className="text-2xl font-bold mb-4">Loading Machine Details...</h1>
+            <h1 className="text-2xl font-bold mb-4">
+              Loading Machine Details...
+            </h1>
             <p className="text-muted-foreground">
               Please wait while we fetch the machine information.
             </p>
@@ -104,8 +107,10 @@ export default function ProductDetailPage() {
     );
   }
 
-  const images = machine.fields.images?.map(getImageUrl) || ['/placeholder.svg'];
-  
+  const images = machine.fields.images?.map(getImageUrl) || [
+    "/placeholder.svg",
+  ];
+
   const nextImage = () => {
     setCurrentImageIndex((prev) => (prev + 1) % images.length);
   };
@@ -124,10 +129,12 @@ export default function ProductDetailPage() {
               <div className="relative">
                 <img
                   src={images[currentImageIndex]}
-                  alt={`${machine.fields.name} - Image ${currentImageIndex + 1}`}
+                  alt={`${machine.fields.name} - Image ${
+                    currentImageIndex + 1
+                  }`}
                   className="w-full h-96 lg:h-[500px] object-cover rounded-t-lg -mt-10"
                   onError={(e) => {
-                    e.currentTarget.src = '/placeholder.svg';
+                    e.currentTarget.src = "/placeholder.svg";
                   }}
                 />
 
@@ -169,11 +176,15 @@ export default function ProductDetailPage() {
                       <Maximize2 className="h-4 w-4" />
                     </Button>
                   </DialogTrigger>
-                  <DialogContent className="max-w-4xl">
+                  <DialogTitle></DialogTitle>
+                  <DialogContent className="max-w-[98vw] w-auto h-auto max-h-[98vh] p-1">
+                    <DialogTitle className="sr-only">
+                      Full Size Image
+                    </DialogTitle>
                     <img
                       src={images[currentImageIndex]}
                       alt={`${machine.fields.name} - Full Size`}
-                      className="w-full h-auto max-h-[80vh] object-contain"
+                      className="w-full h-full max-h-[95vh] object-contain"
                     />
                   </DialogContent>
                 </Dialog>
@@ -198,7 +209,7 @@ export default function ProductDetailPage() {
                           alt={`Thumbnail ${index + 1}`}
                           className="w-full h-full object-cover"
                           onError={(e) => {
-                            e.currentTarget.src = '/placeholder.svg';
+                            e.currentTarget.src = "/placeholder.svg";
                           }}
                         />
                       </button>
@@ -221,7 +232,9 @@ export default function ProductDetailPage() {
               variant="outline"
               size="icon"
               className="bg-transparent"
-              onClick={() => {/* Add to favorites functionality */}}
+              onClick={() => {
+                /* Add to favorites functionality */
+              }}
               aria-label="Add to favorites">
               <Heart className="h-5 w-5" />
             </Button>
@@ -299,7 +312,9 @@ export default function ProductDetailPage() {
                   <span className="font-medium w-32">Status</span>
                   <span className="flex-1">
                     {machine.fields.isAvailable ? (
-                      <Badge className="bg-green-500 text-white">Available</Badge>
+                      <Badge className="bg-green-500 text-white">
+                        Available
+                      </Badge>
                     ) : (
                       <Badge variant="destructive">Sold</Badge>
                     )}
@@ -316,13 +331,15 @@ export default function ProductDetailPage() {
         <div className="mt-12">
           <Card>
             <CardHeader>
-              <CardTitle className="text-2xl">Technical Specification</CardTitle>
+              <CardTitle className="text-2xl">
+                Technical Specification
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <div 
+              <div
                 className="prose prose-sm max-w-none text-muted-foreground"
-                dangerouslySetInnerHTML={{ 
-                  __html: documentToHtmlString(machine.fields.specification) 
+                dangerouslySetInnerHTML={{
+                  __html: documentToHtmlString(machine.fields.specification),
                 }}
               />
               {/* {machine.fields.specification} */}
