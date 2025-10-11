@@ -24,6 +24,8 @@ import HeroSection from "@/components/hero";
 import { MachineEntry } from "@/types/contentful";
 import { contentfulClient } from "@/lib/contentful";
 
+export const revalidate = 3600; // Revalidate content every hour
+
 // Server-side data fetching function
 async function getMachines(): Promise<any[]> {
   try {
