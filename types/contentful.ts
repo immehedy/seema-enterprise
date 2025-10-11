@@ -37,7 +37,7 @@ export interface ContentfulAsset {
       type: string;
       refNo: number;
       images?: ContentfulAsset[];
-      specification?: Record<string, any>;
+      specification?: any;
       isAvailable: boolean;
     };
   }

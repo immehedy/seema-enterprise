@@ -1,7 +1,9 @@
 import { ContentfulAsset, MachineEntry } from '@/types/contentful';
 import { createClient } from 'contentful';
 import { documentToHtmlString } from '@contentful/rich-text-html-renderer';
-import { BLOCKS, MARKS, Document } from '@contentful/rich-text-types';
+import { BLOCKS, MARKS } from '@contentful/rich-text-types';
+import type { Document, Block, Inline, Text } from "@contentful/rich-text-types";
+
 
 // Initialize Contentful client
 export const contentfulClient = createClient({
@@ -211,15 +213,19 @@ export function hasRichTextContent(document: any): boolean {
     return false;
   }
   
-  return document.content.some((node: any) => {
-    if (node.nodeType === 'text' && node.value.trim()) {
-      return true;
+  const checkNode = (node: Block | Inline | Text): boolean => {
+    // Check if it's a text node with content
+    if ('value' in node && node.nodeType === 'text') {
+      return node.value.trim().length > 0;
     }
-    if (node.content && Array.isArray(node.content)) {
-      return node.content.some((child: any) => 
-        child.nodeType === 'text' && child.value.trim()
-      );
+    
+    // Recursively check nested content
+    if ('content' in node && Array.isArray(node.content)) {
+      return node.content.some(checkNode);
     }
+    
     return false;
-  });
+  };
+  
+  return document.content.some(checkNode);
 }
