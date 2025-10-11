@@ -325,6 +325,7 @@ export default function ProductDetailPage() {
                   __html: documentToHtmlString(machine.fields.specification) 
                 }}
               />
+              {/* {machine.fields.specification} */}
             </CardContent>
           </Card>
         </div>
