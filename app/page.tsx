@@ -30,7 +30,7 @@ async function getMachines(): Promise<any[]> {
     const entries = await contentfulClient.getEntries({
       content_type: "machine",
     });
-    
+
     const mapped = entries.items.map((entry: any) => {
       const fields = entry.fields;
       return {
@@ -56,10 +56,12 @@ export default async function HomePage() {
   // Fetch machines on the server
   const machines = await getMachines();
 
-
   // Sort by creation date (newest first) and show only the latest 5
   const featuredProducts = machines
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    .sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    )
     .slice(0, 5);
 
   const services = [
@@ -100,40 +102,13 @@ export default async function HomePage() {
     <div className="flex flex-col">
       {/* Hero Section */}
       <HeroSection />
-
-      {/* Stats Section */}
-      <section className="py-12 sm:py-16 bg-accent text-primary-foreground">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {stats.map((stat, index) => (
-              <div key={index} className="text-center">
-                <div className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2">
-                  {stat.number}
-                </div>
-                <div className="text-sm sm:text-base opacity-90">
-                  {stat.label}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Featured Products */}
-      <section className="py-16 sm:py-20">
+      <section className="">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <Badge variant="secondary" className="mb-4">
-              New Arrivals
-            </Badge>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4">
               Latest Arrivals & Premium Machinery
             </h2>
-            <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
-              Discover our carefully selected collection of high-quality
-              printing and paper-converting equipment from leading
-              manufacturers.
-            </p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
@@ -142,6 +117,9 @@ export default async function HomePage() {
                 key={product.slug || index}
                 className="group hover:shadow-lg transition-shadow flex flex-col h-full">
                 <div className="relative">
+                  <Badge variant="secondary" className=" mx-2 absolute -mt-4">
+                    New Arrivals
+                  </Badge>
                   <img
                     src={
                       product.images?.[0]?.url ||
@@ -156,7 +134,9 @@ export default async function HomePage() {
                 <div className="flex flex-col flex-grow">
                   <CardHeader className="pb-3 flex-grow">
                     <CardTitle className="text-base sm:text-lg leading-tight group-hover:text-blue-600 transition-colors">
-                      <Link href={`/stock/${product.slug}`}>{product.name}</Link>
+                      <Link href={`/stock/${product.slug}`}>
+                        {product.name}
+                      </Link>
                     </CardTitle>
                   </CardHeader>
 
@@ -219,6 +199,24 @@ export default async function HomePage() {
                   <CardDescription>{service.description}</CardDescription>
                 </CardContent>
               </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Stats Section */}
+      <section className="py-12 sm:py-16 bg-accent text-primary-foreground">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {stats.map((stat, index) => (
+              <div key={index} className="text-center">
+                <div className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2">
+                  {stat.number}
+                </div>
+                <div className="text-sm sm:text-base opacity-90">
+                  {stat.label}
+                </div>
+              </div>
             ))}
           </div>
         </div>
