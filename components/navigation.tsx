@@ -199,14 +199,6 @@ export function Navigation() {
 
                 {/* Mobile Navigation Links */}
                 <ul className="flex flex-col">
-                  <li className="border-b">
-                    <Link
-                      href="/"
-                      className="block py-4 px-4 hover:bg-gray-50 text-gray-700 lg:hidden"
-                      onClick={() => setIsOpen(false)}>
-                      Home
-                    </Link>
-                  </li>
                   {navItems.map((item) => (
                     <li key={item.href} className="border-b">
                       <Link
