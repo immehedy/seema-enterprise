@@ -276,6 +276,15 @@ export default function ProductDetailPage() {
                     </span>
                   </div>
                 )}
+                 {/* Series */}
+                 {machine.fields.series && (
+                  <div className="flex py-3 border-b">
+                    <span className="font-medium w-32">Series</span>
+                    <span className="text-muted-foreground flex-1">
+                      {machine.fields.series}
+                    </span>
+                  </div>
+                )}
 
                 {/* Model */}
                 {machine.fields.model && (
@@ -306,18 +315,30 @@ export default function ProductDetailPage() {
                     </span>
                   </div>
                 )}
+                {/* Speed */}
+                {machine.fields.speed && (
+                  <div className="flex py-3 border-b">
+                    <span className="font-medium w-32">Speed</span>
+                    <span className="text-muted-foreground flex-1">
+                      {machine.fields.speed}
+                    </span>
+                  </div>
+                )}
+                {/* Origin */}
+                {machine.fields.origin && (
+                  <div className="flex py-3 border-b">
+                    <span className="font-medium w-32">Origin</span>
+                    <span className="text-muted-foreground flex-1">
+                      {machine.fields.origin}
+                    </span>
+                  </div>
+                )}
 
                 {/* Availability */}
                 <div className="flex py-3">
-                  <span className="font-medium w-32">Status</span>
+                  <span className="font-medium w-32">Available</span>
                   <span className="flex-1">
-                    {machine.fields.isAvailable ? (
-                      <Badge className="bg-green-500 text-white">
-                        Available
-                      </Badge>
-                    ) : (
-                      <Badge variant="destructive">Sold</Badge>
-                    )}
+                      {machine.fields.availableBy}
                   </span>
                 </div>
               </div>
