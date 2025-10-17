@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     },
   manifest: "/site.webmanifest",
   generator: "fourbit.io",
-  keywords: "printing machinery, paper converting, industrial equipment, machinery supplier, printing equipment",
+  keywords: "printing machinery, paper converting, industrial equipment, machinery supplier, printing equipment, seema enterprise",
 }
 
 const geistSans = Geist({
@@ -44,9 +44,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Suspense fallback={<div>Loading...</div>}>
-          <div className="mb-20">
           <Navigation />
-          </div>
           <main className="min-h-screen">{children}</main>
           <Footer />
         </Suspense>

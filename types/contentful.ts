@@ -34,6 +34,10 @@ export interface ContentfulAsset {
       category: string;
       year: number;
       size: string;
+      speed: string;
+      series: string;
+      origin: string;
+      availableBy: string;
       type: string;
       refNo: number;
       images?: ContentfulAsset[];

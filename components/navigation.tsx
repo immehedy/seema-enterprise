@@ -13,44 +13,63 @@ export function Navigation() {
   const [isMobileDropdownOpen, setIsMobileDropdownOpen] = useState(false);
 
   const navItems = [
-    { href: "/", label: "Home" },
-    { href: "/about", label: "About Us" },
+    { href: "/", label: "HOME" },
+    { href: "/about", label: "ABOUT US" },
   ];
 
   // Define your machine categories organized by columns
   const machineColumns = [
     {
-      title: "Pre-Press",
+      title: "Press",
       items: [
-        { href: "/stock", label: "All Machine" },
+        { href: "#", label: "One Color" },
+        { href: "#", label: "Two Color" },
+        { href: "#", label: "Four Color +" },
       ],
     },
     {
-      title: "Post-Press",
-      items: [
-        { href: "/stock", label: "All Machine" },
-      ],
+      items: [{ href: "#", label: "Paper Cutting" }],
     },
     {
-      title: "Printing",
-      items: [
-        { href: "/stock", label: "All Machine" },
-      ],
+      items: [{ href: "#", label: "Die Cutting" }],
+    },
+    {
+      items: [{ href: "#", label: "Post Press" }],
     },
   ];
-  
 
   // Flatten for mobile view
-  const allMachineItems = machineColumns.flatMap(column => column.items);
+  const allMachineItems = machineColumns.flatMap((column) => column.items);
 
   const afterMachinesItems = [
-    { href: "/news", label: "News" },
-    { href: "/contact", label: "Contact" },
+    { href: "/recent-updates", label: "RECENT UPDATES" },
+    { href: "/contact", label: "CONTACT" },
   ];
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 w-full md:w-[80%] mx-auto bg-white">
-      <nav className="relative w-full shadow-md">
+    <header className="relative top-0 left-0 right-0 w-full z-50 mx-auto">
+      <div className="hidden lg:block w-full bg-secondary py-2">
+        {/* Language Selector & Contact Info - Desktop */}
+        <div className="flex items-center justify-end px-3 gap-4 text-white">
+            <Link
+              href="tel:+8801711871147"
+              className="flex items-center gap-2 text-sm  transition-colors py-1">
+              <Phone className="h-4 w-4" />
+              <span className="font-semibold whitespace-nowrap">
+                +880 1711-871147
+              </span>
+            </Link>
+            <Link
+              href="mailto:info@seemaenterprisebd.com"
+              className="flex items-center gap-2 text-sm transition-colors py-1">
+              <Mail className="h-4 w-4" />
+              <span className="font-semibold whitespace-nowrap">
+                info@seemaenterprisebd.com
+              </span>
+            </Link>
+        </div>
+      </div>
+      <nav className="w-full shadow-md">
         <div className="container mx-auto px-0 flex items-center justify-between h-20">
           {/* Logo */}
           <Link href="/" className="">
@@ -76,45 +95,40 @@ export function Navigation() {
                   </Link>
                 </li>
               ))}
-              
+
               {/* Machines Dropdown - Desktop with Multiple Columns */}
-              <li 
+              <li
                 className="relative"
                 onMouseEnter={() => setIsMachinesOpen(true)}
-                onMouseLeave={() => setIsMachinesOpen(false)}
-              >
+                onMouseLeave={() => setIsMachinesOpen(false)}>
                 <button className="flex items-center gap-1 py-3 px-3 hover:text-blue-700 transition-colors text-gray-700 font-normal">
-                  Machines
-                  <ChevronDown className={`h-4 w-4 transition-transform ${isMachinesOpen ? 'rotate-180' : ''}`} />
+                  MACHINERY
+                  <ChevronDown
+                    className={`h-4 w-4 transition-transform ${
+                      isMachinesOpen ? "rotate-180" : ""
+                    }`}
+                  />
                 </button>
-                
+
                 {isMachinesOpen && machineColumns?.length >= 0 && (
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 bg-white shadow-lg rounded-md py-4 px-4">
-                    <div 
-                      className="grid gap-6"
-                      style={{ 
-                        gridTemplateColumns: `repeat(${machineColumns.length}, minmax(200px, 1fr))` 
-                      }}
-                    >
-                      {machineColumns?.map((column: any, idx: number) => (
-                        <div key={idx} className="px-2 min-w-0">
-                          <h3 className="font-semibold text-sm text-gray-900 mb-3 px-2 text-wrap">
+                  <div className="absolute top-full left-0 bg-white shadow-lg rounded-md py-2 min-w-[200px]">
+                    {machineColumns.map((column: any, idx: number) => (
+                      <div key={idx} className="border-b last:border-b-0">
+                        {column.title && (
+                          <div className="px-4 py-2 text-xs font-semibold text-gray-600 uppercase border">
                             {column.title}
-                          </h3>
-                          <div className="space-y-1">
-                            {column.items.map((machine: any) => (
-                              <Link
-                                key={machine?.href}
-                                href={machine?.href}
-                                className="block px-2 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-blue-700 transition-colors rounded text-wrap"
-                              >
-                                {machine?.label}
-                              </Link>
-                            ))}
                           </div>
-                        </div>
-                      ))}
-                    </div>
+                        )}
+                        {column.items.map((machine: any) => (
+                          <Link
+                            key={machine?.href}
+                            href={machine?.href}
+                            className="block px-6 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-blue-700 transition-colors">
+                            {machine?.label}
+                          </Link>
+                        ))}
+                      </div>
+                    ))}
                   </div>
                 )}
               </li>
@@ -129,29 +143,6 @@ export function Navigation() {
                 </li>
               ))}
             </ul>
-          </div>
-
-          {/* Language Selector & Contact Info - Desktop */}
-          <div className="hidden lg:flex items-center pr-3 gap-4">
-            {/* Contact Info */}
-            <div className="flex flex-col gap-0">
-              <Link
-                href="tel:+8801711871147"
-                className="flex items-center gap-2 text-sm text-gray-700 hover:text-blue-700 transition-colors py-1">
-                <Phone className="h-4 w-4" />
-                <span className="font-semibold whitespace-nowrap xl:inline hidden">
-                  +880 1711-871147
-                </span>
-              </Link>
-              <Link
-                href="mailto:info@seemaenterprisebd.com"
-                className="flex items-center gap-2 text-sm text-gray-600 hover:text-blue-700 transition-colors py-1">
-                <Mail className="h-4 w-4" />
-                <span className="font-semibold whitespace-nowrap xl:inline hidden">
-                  info@seemaenterprisebd.com
-                </span>
-              </Link>
-            </div>
           </div>
 
           {/* Mobile Menu Button */}
@@ -209,15 +200,20 @@ export function Navigation() {
                       </Link>
                     </li>
                   ))}
-                  
+
                   {/* Machines Dropdown - Mobile (Grouped by Category) */}
                   <li className="border-b">
                     <button
-                      onClick={() => setIsMobileDropdownOpen(!isMobileDropdownOpen)}
-                      className="w-full flex items-center justify-between py-4 px-4 hover:bg-gray-50 text-gray-700"
-                    >
-                      <span>Machines</span>
-                      <ChevronDown className={`h-4 w-4 transition-transform ${isMobileDropdownOpen ? 'rotate-180' : ''}`} />
+                      onClick={() =>
+                        setIsMobileDropdownOpen(!isMobileDropdownOpen)
+                      }
+                      className="w-full flex items-center justify-between py-4 px-4 hover:bg-gray-50 text-gray-700">
+                      <span>MACHINERY</span>
+                      <ChevronDown
+                        className={`h-4 w-4 transition-transform ${
+                          isMobileDropdownOpen ? "rotate-180" : ""
+                        }`}
+                      />
                     </button>
                     {isMobileDropdownOpen && (
                       <div className="bg-gray-50">
@@ -231,8 +227,7 @@ export function Navigation() {
                                 key={machine.href}
                                 href={machine.href}
                                 className="block py-3 px-8 hover:bg-gray-100 text-gray-600 text-sm"
-                                onClick={() => setIsOpen(false)}
-                              >
+                                onClick={() => setIsOpen(false)}>
                                 {machine.label}
                               </Link>
                             ))}
