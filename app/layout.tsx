@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     },
   manifest: "/site.webmanifest",
   generator: "fourbit.io",
-  keywords: "printing machinery, paper converting, industrial equipment, machinery supplier, printing equipment",
+  keywords: "printing machinery, paper converting, industrial equipment, machinery supplier, printing equipment, seema enterprise",
 }
 
 const geistSans = Geist({

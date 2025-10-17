@@ -55,7 +55,7 @@ export function Navigation() {
               href="tel:+8801711871147"
               className="flex items-center gap-2 text-sm  transition-colors py-1">
               <Phone className="h-4 w-4" />
-              <span className="font-semibold whitespace-nowrap xl:inline hidden">
+              <span className="font-semibold whitespace-nowrap">
                 +880 1711-871147
               </span>
             </Link>
@@ -63,7 +63,7 @@ export function Navigation() {
               href="mailto:info@seemaenterprisebd.com"
               className="flex items-center gap-2 text-sm transition-colors py-1">
               <Mail className="h-4 w-4" />
-              <span className="font-semibold whitespace-nowrap xl:inline hidden">
+              <span className="font-semibold whitespace-nowrap">
                 info@seemaenterprisebd.com
               </span>
             </Link>
