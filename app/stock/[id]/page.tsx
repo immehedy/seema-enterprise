@@ -356,14 +356,30 @@ export default function ProductDetailPage() {
                 Technical Specification
               </CardTitle>
             </CardHeader>
-            <CardContent>
+            {/* <CardContent>
               <div
                 className="prose prose-sm max-w-none text-muted-foreground"
                 dangerouslySetInnerHTML={{
                   __html: documentToHtmlString(machine.fields.specification),
                 }}
               />
-              {/* {machine.fields.specification} */}
+              
+            </CardContent> */}
+            <CardContent>
+              <div
+                className="prose prose-sm max-w-none text-muted-foreground leading-relaxed whitespace-pre-wrap
+                  [&>ul]:list-disc [&>ul]:pl-6 [&>ul]:space-y-2 [&>ul]:my-4
+                  [&>ol]:list-decimal [&>ol]:pl-6 [&>ol]:space-y-2 [&>ol]:my-4
+                  [&>p]:mb-4 [&>p]:leading-7
+                  [&>h1]:text-2xl [&>h1]:font-bold [&>h1]:mb-4 [&>h1]:text-foreground
+                  [&>h2]:text-xl [&>h2]:font-semibold [&>h2]:mb-3 [&>h2]:text-foreground
+                  [&>h3]:text-lg [&>h3]:font-medium [&>h3]:mb-2 [&>h3]:text-foreground
+                  [&>strong]:font-semibold [&>strong]:text-foreground
+                  [&>li]:mb-1"
+                dangerouslySetInnerHTML={{
+                  __html: documentToHtmlString(machine.fields.specification),
+                }}
+              />
             </CardContent>
           </Card>
         </div>
