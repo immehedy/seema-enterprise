@@ -10,21 +10,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import {
-  ArrowLeft,
   Heart,
   ChevronLeft,
   ChevronRight,
   Maximize2,
   Loader2,
 } from "lucide-react";
-import Link from "next/link";
 import { useParams } from "next/navigation";
 import {
   getMachineBySlug,
-  richTextToPlainText,
   getImageUrl,
 } from "@/lib/contentful";
 import type { MachineEntry } from "@/types/contentful";
@@ -356,15 +352,6 @@ export default function ProductDetailPage() {
                 Technical Specification
               </CardTitle>
             </CardHeader>
-            {/* <CardContent>
-              <div
-                className="prose prose-sm max-w-none text-muted-foreground"
-                dangerouslySetInnerHTML={{
-                  __html: documentToHtmlString(machine.fields.specification),
-                }}
-              />
-              
-            </CardContent> */}
             <CardContent>
               <div
                 className="prose prose-sm max-w-none text-muted-foreground leading-relaxed whitespace-pre-wrap

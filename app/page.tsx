@@ -60,6 +60,7 @@ export default async function HomePage() {
 
   // Sort by creation date (newest first) and show only the latest 5
   const featuredProducts = machines
+    .filter((machine) => machine.isFeatured === true)
     .sort(
       (a, b) =>
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
@@ -199,7 +200,7 @@ export default async function HomePage() {
                 className="group hover:shadow-lg transition-shadow flex flex-col h-full">
                 <div className="relative">
                   <Badge variant="secondary" className=" mx-2 absolute -mt-4">
-                    New Arrivals
+                    Featured
                   </Badge>
                   <img
                     src={
