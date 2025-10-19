@@ -22,19 +22,19 @@ export function Navigation() {
     {
       title: "Press",
       items: [
-        { href: "#", label: "One Color" },
-        { href: "#", label: "Two Color" },
-        { href: "#", label: "Four Color +" },
+        { href: "/press-one", label: "One Color" },
+        { href: "/press-two", label: "Two Color" },
+        { href: "/press-four", label: "Four Color +" },
       ],
     },
     {
-      items: [{ href: "#", label: "Paper Cutting" }],
+      items: [{ href: "/paper-cutting", label: "Paper Cutting" }],
     },
     {
-      items: [{ href: "#", label: "Die Cutting" }],
+      items: [{ href: "/die-cutting", label: "Die Cutting" }],
     },
     {
-      items: [{ href: "#", label: "Post Press" }],
+      items: [{ href: "/post-press", label: "Post Press" }],
     },
   ];
 

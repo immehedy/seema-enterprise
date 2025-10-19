@@ -71,25 +71,25 @@ export default async function HomePage() {
       image: "/press.jpeg",
       alt: "PRESS MACHINE",
       title: "PRESS",
-      url: "/press"
+      url: "/press-one"
     },
     {
       image: "/cutting-machine.png",
       alt: "PAPER CUTTING MACHINE",
       title: "PAPER CUTTING",
-      url: "/paperCutting"
+      url: "/paper-cutting"
     },
     {
       image: "/die-cutting.jpeg",
       alt: "DIE CUTTING MACHINE",
       title: "DIE CUTTING",
-      url: "/dieCutting"
+      url: "/die-cutting"
     },
     {
       image: "/post-press.jpeg",
       alt: "POST PRESS MACHINE",
       title: "POST PRESS",
-      url: "/postPress"
+      url: "/post-press"
     },
   ];
 
@@ -161,14 +161,14 @@ export default async function HomePage() {
                 <div className="flex flex-col flex-grow text-center">
                   <CardHeader className="flex-grow">
                     <CardTitle className="text-base sm:text-lg leading-tight group-hover:text-blue-600 transition-colors">
-                      <Link href={`/${machine.url}`}>
+                      <Link href={machine.url}>
                         {machine.title}
                       </Link>
                     </CardTitle>
                   </CardHeader>
 
                   <CardContent className="pt-2">
-                    <Link href={`/${machine.url}`}>
+                    <Link href={machine.url}>
                       <Button
                         size="sm"
                         variant="outline"
