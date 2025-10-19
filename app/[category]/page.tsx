@@ -2,6 +2,7 @@
 
 import { use, useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -45,6 +46,7 @@ interface Machine {
 
 // Map slug to categories
 const SLUG_TO_CATEGORIES: Record<string, string[]> = {
+  "press": ["ONE COLOUR", "TWO COLOUR", "FOUR COLOUR +"],
   "press-one": ["ONE COLOUR"],
   "press-two": ["TWO COLOUR"],
   "press-four": ["FOUR COLOUR +"],
@@ -55,6 +57,7 @@ const SLUG_TO_CATEGORIES: Record<string, string[]> = {
 
 // Map slug to display name
 const SLUG_TO_DISPLAY_NAME: Record<string, string> = {
+  "press": "Printing Press - All Categories",
   "press-one": "One Colour Press",
   "press-two": "Two Colour Press",
   "press-four": "Four Colour + Press",
@@ -108,15 +111,16 @@ export default function CategoryPage({ params }: { params: Promise<{ category: s
     if (!slug) return true;
     
     const categories = SLUG_TO_CATEGORIES[slug];
-    console.log("categories", categories)
     if (!categories) return true;
     
-    const machineCategoryName = machine.category?.fields?.name;
-    console.log({machineCategoryName})
-    return machineCategoryName && categories.includes(machineCategoryName);
+    const machineCategoryName = machine.category?.fields?.name?.replace(/\s+/g, '');
+    return machineCategoryName && categories.some(cat => cat.replace(/\s+/g, '') === machineCategoryName);
   });
 
   const categoryDisplayName = slug ? SLUG_TO_DISPLAY_NAME[slug] || "Stock Catalogue" : "Stock Catalogue";
+  
+  // Check if current page is a press category
+  const isPressCategory = ["press", "press-one", "press-two", "press-four"].includes(slug);
 
   console.log({machines, filteredMachines, slug});
 
@@ -139,6 +143,46 @@ export default function CategoryPage({ params }: { params: Promise<{ category: s
       </div>
 
       {/* Search and Filters */}
+      
+      {/* Tabs for press categories */}
+      {isPressCategory && (
+        <div className="mb-6">
+          <div className="flex gap-2 border-b">
+            <Link href="/press">
+              <Button 
+                variant={slug === "press" ? "default" : "ghost"}
+                className="rounded-b-none"
+              >
+                All
+              </Button>
+            </Link>
+            <Link href="/press-one">
+              <Button 
+                variant={slug === "press-one" ? "default" : "ghost"}
+                className="rounded-b-none"
+              >
+                ONE COLOUR
+              </Button>
+            </Link>
+            <Link href="/press-two">
+              <Button 
+                variant={slug === "press-two" ? "default" : "ghost"}
+                className="rounded-b-none"
+              >
+                TWO COLOUR
+              </Button>
+            </Link>
+            <Link href="/press-four">
+              <Button 
+                variant={slug === "press-four" ? "default" : "ghost"}
+                className="rounded-b-none"
+              >
+                FOUR COLOUR +
+              </Button>
+            </Link>
+          </div>
+        </div>
+      )}
 
       {/* Results Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">

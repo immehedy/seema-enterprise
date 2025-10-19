@@ -71,7 +71,7 @@ export default async function HomePage() {
       image: "/press.jpeg",
       alt: "PRESS MACHINE",
       title: "PRESS",
-      url: "/press-one"
+      url: "/press"
     },
     {
       image: "/cutting-machine.png",
