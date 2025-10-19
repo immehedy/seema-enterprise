@@ -66,6 +66,33 @@ export default async function HomePage() {
     )
     .slice(0, 5);
 
+  const MachineTyupes = [
+    {
+      image: "/press.jpeg",
+      alt: "PRESS MACHINE",
+      title: "PRESS",
+      url: "/press"
+    },
+    {
+      image: "/cutting-machine.png",
+      alt: "PAPER CUTTING MACHINE",
+      title: "PAPER CUTTING",
+      url: "/paperCutting"
+    },
+    {
+      image: "/die-cutting.jpeg",
+      alt: "DIE CUTTING MACHINE",
+      title: "DIE CUTTING",
+      url: "/dieCutting"
+    },
+    {
+      image: "/post-press.jpeg",
+      alt: "POST PRESS MACHINE",
+      title: "POST PRESS",
+      url: "/postPress"
+    },
+  ];
+
   const services = [
     {
       icon: <Search className="h-8 w-8" />,
@@ -104,12 +131,64 @@ export default async function HomePage() {
     <div className="flex flex-col">
       {/* Hero Section */}
       <HeroSection />
+      {/* Machine Types  */}
+      <section className="">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4">
+              Types of Machinery
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            {MachineTyupes.map((machine, index) => (
+              <Card
+                key={machine.url || index}
+                className="group hover:shadow-lg transition-shadow flex flex-col h-full">
+                <div className="relative">
+
+                  <img
+                    src={
+                      machine.image ||
+                      "https://images.unsplash.com/photo-1563906267088-b029e7101114?w=800&h=400&fit=crop"
+                    }
+                    alt={machine.alt}
+                    className="w-full h-48 sm:h-56 lg:h-48 object-contain rounded-t-lg -mt-6"
+                  />
+                </div>
+
+                {/* Wrapper to control flex layout */}
+                <div className="flex flex-col flex-grow text-center">
+                  <CardHeader className="flex-grow">
+                    <CardTitle className="text-base sm:text-lg leading-tight group-hover:text-blue-600 transition-colors">
+                      <Link href={`/${machine.url}`}>
+                        {machine.title}
+                      </Link>
+                    </CardTitle>
+                  </CardHeader>
+
+                  <CardContent className="pt-2">
+                    <Link href={`/${machine.url}`}>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="bg-transparent w-full">
+                        Visit Page
+                      </Button>
+                    </Link>
+                  </CardContent>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
       {/* Featured Products */}
       <section className="">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4">
-              Latest Arrivals & Premium Machinery
+              Featured Machines
             </h2>
           </div>
 
@@ -156,32 +235,16 @@ export default async function HomePage() {
               </Card>
             ))}
           </div>
-
-          <div className="text-center">
-            <Link href="/stock">
-              <Button size="lg" variant="outline" className="bg-transparent">
-                View All Stock
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
-          </div>
         </div>
       </section>
 
-      {/* Services Section */}
+      {/* Recent Update Section */}
       <section className="py-16 sm:py-20 bg-muted/30">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <Badge variant="secondary" className="mb-4">
-              Our Services
-            </Badge>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4">
-              Complete Solutions for Your Business
+              Recent Updates
             </h2>
-            <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
-              Beyond equipment sales, we provide comprehensive services to
-              ensure your success in the printing and packaging industry.
-            </p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">

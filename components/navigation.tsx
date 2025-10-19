@@ -90,7 +90,7 @@ export function Navigation() {
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className="block py-3 px-3 hover:text-blue-700 transition-colors text-gray-700 font-normal">
+                    className="block py-3 px-3 hover:text-blue-700 transition-colors text-gray-700 font-normal uppercase">
                     {item.label}
                   </Link>
                 </li>
@@ -123,7 +123,7 @@ export function Navigation() {
                           <Link
                             key={machine?.href}
                             href={machine?.href}
-                            className="block px-6 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-blue-700 transition-colors">
+                            className="block px-6 py-2 text-sm text-gray-700 hover:bg-gray-100 uppercase hover:text-blue-700 transition-colors">
                             {machine?.label}
                           </Link>
                         ))}
@@ -194,7 +194,7 @@ export function Navigation() {
                     <li key={item.href} className="border-b">
                       <Link
                         href={item.href}
-                        className="block py-4 px-4 hover:bg-gray-50 text-gray-700"
+                        className="block py-4 px-4 hover:bg-gray-50 text-gray-700 uppercase"
                         onClick={() => setIsOpen(false)}>
                         {item.label}
                       </Link>
@@ -226,7 +226,7 @@ export function Navigation() {
                               <Link
                                 key={machine.href}
                                 href={machine.href}
-                                className="block py-3 px-8 hover:bg-gray-100 text-gray-600 text-sm"
+                                className="block py-3 px-8 hover:bg-gray-100 text-gray-600 text-sm uppercase"
                                 onClick={() => setIsOpen(false)}>
                                 {machine.label}
                               </Link>
@@ -241,7 +241,7 @@ export function Navigation() {
                     <li key={item.href} className="border-b">
                       <Link
                         href={item.href}
-                        className="block py-4 px-4 hover:bg-gray-50 text-gray-700"
+                        className="block py-4 px-4 hover:bg-gray-50 text-gray-700 uppercase"
                         onClick={() => setIsOpen(false)}>
                         {item.label}
                       </Link>
