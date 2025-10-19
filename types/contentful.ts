@@ -42,6 +42,7 @@ export interface ContentfulAsset {
       refNo: number;
       images?: ContentfulAsset[];
       specification?: any;
+      isFeatured?: boolean;
       isAvailable: boolean;
     };
   }
