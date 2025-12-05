@@ -60,8 +60,8 @@
   /* Primary/Secondary/Accent Colors */
   --primary: oklch(0.518 0.275 328.8); /* #8f278e */
   --primary-foreground: oklch(1 0 0); /* white */
-  --secondary: oklch(0.448 0.239 278.8); /* #303c9a */
-  --secondary-foreground: oklch(1 0 0); /* white */
+  --secondary: oklch(0.32 0.20 272); /* Darker logo-blue */
+  --secondary-foreground: oklch(1 0 0); /* keep foreground white */
   --accent: oklch(0.725 0.192 282.4); /* #7c84e2 */
   --accent-foreground: oklch(1 0 0); /* white */
 

@@ -1,5 +1,6 @@
 // app/components/HeroSection.tsx (Server Component)
 import { Search } from 'lucide-react';
+import Link from 'next/link';
 import ImageCarousel from './ImageCarousel'; // The client component above
 
 export default function HeroSection() {
@@ -36,10 +37,10 @@ export default function HeroSection() {
               </p>
             </div>
 
-            <button className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-md font-medium transition-colors">
+            <Link href="/press" className="inline-flex items-center gap-2 bg-secondary hover:opacity-90 text-white px-6 py-3 rounded-md font-medium transition-colors">
               <Search className="h-5 w-5" />
               Search what you need
-            </button>
+            </Link>
           </div>
 
           {/* Right Side - Carousel */}

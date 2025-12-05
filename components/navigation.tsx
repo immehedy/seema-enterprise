@@ -90,7 +90,7 @@ export function Navigation() {
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className="block py-3 px-3 hover:text-blue-700 transition-colors text-gray-700 font-normal uppercase">
+                    className="block py-3 px-3 hover:text-blue-700 transition-colors text-gray-700 font-bold uppercase">
                     {item.label}
                   </Link>
                 </li>
@@ -101,7 +101,7 @@ export function Navigation() {
                 className="relative"
                 onMouseEnter={() => setIsMachinesOpen(true)}
                 onMouseLeave={() => setIsMachinesOpen(false)}>
-                <button className="flex items-center gap-1 py-3 px-3 hover:text-blue-700 transition-colors text-gray-700 font-normal">
+                <button className="flex items-center gap-1 py-3 px-3 hover:text-blue-700 transition-colors text-gray-700 font-bold">
                   MACHINERY
                   <ChevronDown
                     className={`h-4 w-4 transition-transform ${
@@ -137,7 +137,7 @@ export function Navigation() {
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className="block py-3 px-3 hover:text-blue-700 transition-colors text-gray-700 font-normal">
+                    className="block py-3 px-3 hover:text-blue-700 transition-colors text-gray-700 font-bold">
                     {item.label}
                   </Link>
                 </li>
