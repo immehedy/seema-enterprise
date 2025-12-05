@@ -81,13 +81,13 @@ export default async function HomePage() {
       url: "/paper-cutting"
     },
     {
-      image: "/die-cutting.jpeg",
+      image: "/die-cutting.png",
       alt: "DIE CUTTING MACHINE",
       title: "DIE CUTTING",
       url: "/die-cutting"
     },
     {
-      image: "/post-press.jpeg",
+      image: "/post-press.png",
       alt: "POST PRESS MACHINE",
       title: "POST PRESS",
       url: "/post-press"
@@ -254,7 +254,7 @@ export default async function HomePage() {
                 key={index}
                 className="text-center hover:shadow-lg transition-shadow">
                 <CardHeader>
-                  <div className="mx-auto mb-4 p-3 bg-accent/10 rounded-full w-fit text-accent">
+                  <div className="mx-auto mb-4 p-3 bg-secondary/10 rounded-full w-fit text-secondary">
                     {service.icon}
                   </div>
                   <CardTitle className="text-lg sm:text-xl">
@@ -271,7 +271,7 @@ export default async function HomePage() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-12 sm:py-16 bg-accent text-primary-foreground">
+      <section className="py-12 sm:py-16 bg-secondary text-secondary-foreground">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
