@@ -1,76 +1,91 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-const ImageCarousel = ({ slides }: any) => {
-  const [currentSlide, setCurrentSlide] = useState(0);
+interface Slide {
+  image: string;
+  alt: string;
+}
 
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % slides.length);
-  };
+export default function ImageCarousel({ slides, children }: { slides: Slide[]; children?: React.ReactNode }) {
+  const [current, setCurrent] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
-  };
+  const goTo = useCallback((index: number) => {
+    if (isTransitioning) return;
+    setIsTransitioning(true);
+    setCurrent(index);
+    setTimeout(() => setIsTransitioning(false), 700);
+  }, [isTransitioning]);
+
+  const next = useCallback(() => {
+    goTo((current + 1) % slides.length);
+  }, [current, slides.length, goTo]);
+
+  const prev = useCallback(() => {
+    goTo((current - 1 + slides.length) % slides.length);
+  }, [current, slides.length, goTo]);
 
   useEffect(() => {
-    const timer = setInterval(nextSlide, 5000);
+    const timer = setInterval(next, 5000);
     return () => clearInterval(timer);
-  }, []);
+  }, [next]);
 
   return (
-    <div className="relative group">
-      <div className="aspect-[2/1] rounded-lg overflow-hidden shadow-xl">
-        {slides.map((slide:any, index: number) => (
-          <div
-            key={index}
-            className={`absolute inset-0 transition-opacity duration-500 ${
-              index === currentSlide ? 'opacity-100' : 'opacity-0'
-            }`}
-          >
-            <img
-              src={slide.image}
-              alt={slide.alt}
-              className="w-full h-full object-cover"
-            />
-          </div>
-        ))}
+    <div className="relative w-full h-[75vh] overflow-hidden group">
+      {slides.map((slide, i) => (
+        <div
+          key={i}
+          className={`absolute inset-0 transition-all duration-700 ease-in-out ${
+            i === current
+              ? 'opacity-100 scale-100'
+              : 'opacity-0 scale-105'
+          }`}
+        >
+          <img
+            src={slide.image}
+            alt={slide.alt}
+            className="w-full h-full object-cover"
+          />
+        </div>
+      ))}
+
+      <div className="absolute inset-0" />
+
+      <div className="relative z-10 h-full flex items-center">
+        {children}
       </div>
 
-      {/* Navigation Buttons */}
       <button
-        onClick={prevSlide}
-        className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
+        onClick={prev}
+        className="absolute left-4 sm:left-6 top-1/2 -translate-y-1/2 z-20 bg-white/10 hover:bg-white/25 backdrop-blur-sm text-white p-2.5 sm:p-3 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 border border-white/20"
         aria-label="Previous slide"
       >
-        <ChevronLeft className="h-6 w-6" />
+        <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6" />
       </button>
       <button
-        onClick={nextSlide}
-        className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
+        onClick={next}
+        className="absolute right-4 sm:right-6 top-1/2 -translate-y-1/2 z-20 bg-white/10 hover:bg-white/25 backdrop-blur-sm text-white p-2.5 sm:p-3 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 border border-white/20"
         aria-label="Next slide"
       >
-        <ChevronRight className="h-6 w-6" />
+        <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6" />
       </button>
 
-      {/* Dots Indicator */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-        {slides.map((_: any, index: number) => (
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-3">
+        {slides.map((_, i) => (
           <button
-            key={index}
-            onClick={() => setCurrentSlide(index)}
-            className={`w-2 h-2 rounded-full transition-all ${
-              index === currentSlide
-                ? 'bg-white w-6'
-                : 'bg-white/60 hover:bg-white/80'
+            key={i}
+            onClick={() => goTo(i)}
+            className={`h-2 rounded-full transition-all duration-500 ${
+              i === current
+                ? 'bg-white w-8'
+                : 'bg-white/40 hover:bg-white/60 w-2'
             }`}
-            aria-label={`Go to slide ${index + 1}`}
+            aria-label={`Go to slide ${i + 1}`}
           />
         ))}
       </div>
     </div>
   );
-};
-
-export default ImageCarousel;
+}
