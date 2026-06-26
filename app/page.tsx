@@ -7,22 +7,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  ArrowRight,
-  Search,
-  Star,
-  Truck,
-  Shield,
-  Users,
-  CheckCircle,
-  Phone,
-  Mail,
-} from "lucide-react";
+import { Phone, Mail, Images } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import HeroSection from "@/components/hero";
-import { MachineEntry } from "@/types/contentful";
-import { contentfulClient } from "@/lib/contentful";
+import { contentfulClient, getGalleryAlbums, getImageUrl } from "@/lib/contentful";
 
 export const revalidate = 3600; // Revalidate content every hour
 
@@ -55,8 +44,9 @@ async function getMachines(): Promise<any[]> {
 }
 
 export default async function HomePage() {
-  // Fetch machines on the server
+  // Fetch machines and gallery albums on the server
   const machines = await getMachines();
+  const galleryAlbums = await getGalleryAlbums(6);
 
   // Sort by creation date (newest first) and show only the latest 5
   const featuredProducts = machines
@@ -91,33 +81,6 @@ export default async function HomePage() {
       alt: "POST PRESS MACHINE",
       title: "POST PRESS",
       url: "/post-press"
-    },
-  ];
-
-  const services = [
-    {
-      icon: <Search className="h-8 w-8" />,
-      title: "Equipment Sourcing",
-      description:
-        "We help you find the exact machinery you need from our extensive network of suppliers worldwide.",
-    },
-    {
-      icon: <Shield className="h-8 w-8" />,
-      title: "Quality Assurance",
-      description:
-        "Every machine undergoes thorough inspection and testing before delivery to ensure optimal performance.",
-    },
-    {
-      icon: <Truck className="h-8 w-8" />,
-      title: "Transportation & Installation",
-      description:
-        "Complete logistics support including safe transportation and professional installation services.",
-    },
-    {
-      icon: <Users className="h-8 w-8" />,
-      title: "Expert Consultation",
-      description:
-        "Our experienced team provides technical guidance and support throughout your purchase journey.",
     },
   ];
 
@@ -239,34 +202,73 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Recent Update Section */}
+      {/* Recent Updates Gallery Section */}
       <section className="py-16 sm:py-20 bg-muted/30">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4">
-              Recent Updates
-            </h2>
+          <div className="flex items-end justify-between mb-8">
+            <div className="border-l-4 border-primary pl-4">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight mb-1">
+                Recent Updates
+              </h2>
+              <p className="text-muted-foreground text-sm">
+                Latest loading &amp; unloading machine arrivals
+              </p>
+            </div>
+            <Link href="/recent-updates">
+              <Button variant="outline" className="hidden sm:flex gap-2">
+                <Images className="h-4 w-4" />
+                View All
+              </Button>
+            </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {services.map((service, index) => (
-              <Card
-                key={index}
-                className="text-center hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <div className="mx-auto mb-4 p-3 bg-secondary/10 rounded-full w-fit text-secondary">
-                    {service.icon}
-                  </div>
-                  <CardTitle className="text-lg sm:text-xl">
-                    {service.title}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription>{service.description}</CardDescription>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          {galleryAlbums.length > 0 ? (
+            <>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-1">
+                {galleryAlbums.map((album) => {
+                  const cover = album.fields.images?.[0];
+                  const coverUrl = cover ? getImageUrl(cover) : "/placeholder.svg";
+                  return (
+                    <Link
+                      key={album.sys.id}
+                      href={`/recent-updates/${album.fields.slug}`}
+                      className="group relative aspect-square overflow-hidden bg-muted block">
+                      <img
+                        src={coverUrl}
+                        alt={album.fields.title}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/55 transition-colors duration-300 flex flex-col justify-end p-4">
+                        <div className="translate-y-3 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+                          <p className="text-white font-semibold text-sm leading-snug line-clamp-2 mb-1">
+                            {album.fields.title}
+                          </p>
+                          {album.fields.images?.length > 1 && (
+                            <p className="text-white/70 text-xs">
+                              {album.fields.images.length} photos
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+              <div className="text-center mt-6 sm:hidden">
+                <Link href="/recent-updates">
+                  <Button variant="outline" className="gap-2">
+                    <Images className="h-4 w-4" />
+                    View All Updates
+                  </Button>
+                </Link>
+              </div>
+            </>
+          ) : (
+            <div className="text-center py-16 text-muted-foreground">
+              <Images className="h-12 w-12 mx-auto mb-4 opacity-30" />
+              <p>No updates available yet. Check back soon!</p>
+            </div>
+          )}
         </div>
       </section>
 

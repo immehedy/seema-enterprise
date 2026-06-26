@@ -1,23 +1,32 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useCallback } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useState, useEffect, useCallback } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface Slide {
   image: string;
   alt: string;
 }
 
-export default function ImageCarousel({ slides, children }: { slides: Slide[]; children?: React.ReactNode }) {
+export default function ImageCarousel({
+  slides,
+  children,
+}: {
+  slides: Slide[];
+  children?: React.ReactNode;
+}) {
   const [current, setCurrent] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
-  const goTo = useCallback((index: number) => {
-    if (isTransitioning) return;
-    setIsTransitioning(true);
-    setCurrent(index);
-    setTimeout(() => setIsTransitioning(false), 700);
-  }, [isTransitioning]);
+  const goTo = useCallback(
+    (index: number) => {
+      if (isTransitioning) return;
+      setIsTransitioning(true);
+      setCurrent(index);
+      setTimeout(() => setIsTransitioning(false), 700);
+    },
+    [isTransitioning]
+  );
 
   const next = useCallback(() => {
     goTo((current + 1) % slides.length);
@@ -38,11 +47,8 @@ export default function ImageCarousel({ slides, children }: { slides: Slide[]; c
         <div
           key={i}
           className={`absolute inset-0 transition-all duration-700 ease-in-out ${
-            i === current
-              ? 'opacity-100 scale-100'
-              : 'opacity-0 scale-105'
-          }`}
-        >
+            i === current ? "opacity-100 scale-100" : "opacity-0 scale-105"
+          }`}>
           <img
             src={slide.image}
             alt={slide.alt}
@@ -53,22 +59,18 @@ export default function ImageCarousel({ slides, children }: { slides: Slide[]; c
 
       <div className="absolute inset-0" />
 
-      <div className="relative z-10 h-full flex items-center">
-        {children}
-      </div>
+      <div className="relative z-10 h-full flex items-center">{children}</div>
 
       <button
         onClick={prev}
         className="absolute left-4 sm:left-6 top-1/2 -translate-y-1/2 z-20 bg-white/10 hover:bg-white/25 backdrop-blur-sm text-white p-2.5 sm:p-3 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 border border-white/20"
-        aria-label="Previous slide"
-      >
+        aria-label="Previous slide">
         <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6" />
       </button>
       <button
         onClick={next}
         className="absolute right-4 sm:right-6 top-1/2 -translate-y-1/2 z-20 bg-white/10 hover:bg-white/25 backdrop-blur-sm text-white p-2.5 sm:p-3 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 border border-white/20"
-        aria-label="Next slide"
-      >
+        aria-label="Next slide">
         <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6" />
       </button>
 
@@ -79,8 +81,8 @@ export default function ImageCarousel({ slides, children }: { slides: Slide[]; c
             onClick={() => goTo(i)}
             className={`h-2 rounded-full transition-all duration-500 ${
               i === current
-                ? 'bg-white w-8'
-                : 'bg-white/40 hover:bg-white/60 w-2'
+                ? "bg-white w-8"
+                : "bg-white/40 hover:bg-white/60 w-2"
             }`}
             aria-label={`Go to slide ${i + 1}`}
           />
