@@ -1,4 +1,20 @@
 // types/contentful.ts
+
+export interface GalleryAlbumEntry {
+  sys: {
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+  };
+  fields: {
+    title: string;
+    slug: string;
+    description?: any; // Rich text
+    images: ContentfulAsset[];
+    publishedDate?: string;
+  };
+}
+
 export interface ContentfulAsset {
     sys: {
       id: string;

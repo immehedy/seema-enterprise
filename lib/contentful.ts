@@ -1,4 +1,4 @@
-import { ContentfulAsset, MachineEntry } from '@/types/contentful';
+import { ContentfulAsset, GalleryAlbumEntry, MachineEntry } from '@/types/contentful';
 import { createClient } from 'contentful';
 import { documentToHtmlString } from '@contentful/rich-text-html-renderer';
 import { BLOCKS, MARKS } from '@contentful/rich-text-types';
@@ -202,6 +202,45 @@ export function renderRichTextToHtml(document: any): string {
   } catch (error) {
     console.error('Error rendering rich text:', error);
     return '<p class="text-muted-foreground">Unable to render content</p>';
+  }
+}
+
+/**
+ * Fetch all gallery albums
+ */
+export async function getGalleryAlbums(limit = 100): Promise<GalleryAlbumEntry[]> {
+  try {
+    const response = await contentfulClient.getEntries({
+      content_type: 'galleryAlbum',
+      include: 2,
+      limit,
+      order: ['-fields.publishedDate' as any],
+    });
+    return response.items as unknown as GalleryAlbumEntry[];
+  } catch (error) {
+    console.error('Error fetching gallery albums:', error);
+    return [];
+  }
+}
+
+/**
+ * Fetch a single gallery album by slug
+ */
+export async function getGalleryAlbumBySlug(slug: string): Promise<GalleryAlbumEntry | null> {
+  try {
+    const response = await contentfulClient.getEntries({
+      content_type: 'galleryAlbum',
+      'fields.slug[match]': slug,
+      include: 2,
+      limit: 1,
+    });
+    if (response.items.length > 0) {
+      return response.items[0] as unknown as GalleryAlbumEntry;
+    }
+    return null;
+  } catch (error) {
+    console.error('Error fetching gallery album by slug:', error);
+    return null;
   }
 }
 
