@@ -11,7 +11,11 @@ import { Phone, Mail, Images } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import HeroSection from "@/components/hero";
-import { contentfulClient, getGalleryAlbums, getImageUrl } from "@/lib/contentful";
+import {
+  contentfulClient,
+  getGalleryAlbums,
+  getImageUrl,
+} from "@/lib/contentful";
 
 export const revalidate = 3600; // Revalidate content every hour
 
@@ -62,46 +66,52 @@ export default async function HomePage() {
       image: "/press.jpeg",
       alt: "PRESS MACHINE",
       title: "PRESS",
-      url: "/press"
+      url: "/press",
     },
     {
       image: "/cutting-machine.png",
       alt: "PAPER CUTTING MACHINE",
       title: "PAPER CUTTING",
-      url: "/paper-cutting"
+      url: "/paper-cutting",
     },
     {
       image: "/die-cutting.png",
       alt: "DIE CUTTING MACHINE",
       title: "DIE CUTTING",
-      url: "/die-cutting"
+      url: "/die-cutting",
     },
     {
       image: "/post-press.png",
       alt: "POST PRESS MACHINE",
       title: "POST PRESS",
-      url: "/post-press"
+      url: "/post-press",
     },
   ];
 
   const stats = [
-    { number: "500+", label: "Machines Sold" },
+    { number: "500+", label: "Machines Sold per Year" },
     { number: "25+", label: "Years Experience" },
-    { number: "50+", label: "Countries Served" },
+    { number: "50+", label: "Supplier countries involved" },
     { number: "98%", label: "Customer Satisfaction" },
   ];
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col space-y-4">
       {/* Hero Section */}
       <HeroSection />
       {/* Machine Types  */}
       <section className="">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4">
-              Types of Machinery
-            </h2>
+          <div className="flex items-end justify-between mb-8">
+            <div className="border-l-4 border-primary pl-4">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight mb-1 uppercase">
+                Types of machinery
+              </h2>
+              <p className="text-muted-foreground text-sm">
+                There are different types of machinery available in seema
+                enterprise
+              </p>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
@@ -110,7 +120,6 @@ export default async function HomePage() {
                 key={machine.url || index}
                 className="group hover:shadow-lg transition-shadow flex flex-col h-full">
                 <div className="relative">
-
                   <img
                     src={
                       machine.image ||
@@ -125,9 +134,7 @@ export default async function HomePage() {
                 <div className="flex flex-col flex-grow text-center">
                   <CardHeader className="flex-grow">
                     <CardTitle className="text-base sm:text-lg leading-tight group-hover:text-blue-600 transition-colors">
-                      <Link href={machine.url}>
-                        {machine.title}
-                      </Link>
+                      <Link href={machine.url}>{machine.title}</Link>
                     </CardTitle>
                   </CardHeader>
 
@@ -150,10 +157,15 @@ export default async function HomePage() {
       {/* Featured Products */}
       <section className="">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4">
-              Featured Machines
-            </h2>
+          <div className="flex items-end justify-between mb-8">
+            <div className="border-l-4 border-primary pl-4">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight mb-1 uppercase">
+                Featured Machines
+              </h2>
+              <p className="text-muted-foreground text-sm">
+                Featured Machines available in seema enterprise
+              </p>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
@@ -203,11 +215,11 @@ export default async function HomePage() {
       </section>
 
       {/* Recent Updates Gallery Section */}
-      <section className="py-16 sm:py-20 bg-muted/30">
+      <section className="pb-16 sm:pb-20 bg-muted/30">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-end justify-between mb-8">
             <div className="border-l-4 border-primary pl-4">
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight mb-1">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight mb-1 uppercase">
                 Recent Updates
               </h2>
               <p className="text-muted-foreground text-sm">
@@ -227,7 +239,9 @@ export default async function HomePage() {
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-1">
                 {galleryAlbums.map((album) => {
                   const cover = album.fields.images?.[0];
-                  const coverUrl = cover ? getImageUrl(cover) : "/placeholder.svg";
+                  const coverUrl = cover
+                    ? getImageUrl(cover)
+                    : "/placeholder.svg";
                   return (
                     <Link
                       key={album.sys.id}
