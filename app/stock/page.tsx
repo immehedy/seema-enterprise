@@ -96,7 +96,7 @@ export default function StockPage() {
     fetchMachines();
   }, []);
 
-  console.log({machines})
+  console.log({ machines });
 
   if (loading) {
     return (
@@ -180,7 +180,6 @@ function MachineCard({
   machine: Machine;
   viewMode: "grid" | "list";
 }) {
-
   const imageUrl = machine.images?.[0]?.url || "/placeholder.jpg";
 
   if (viewMode === "list") {
@@ -210,7 +209,6 @@ function MachineCard({
                     <Link href={`/stock/${machine.slug}`}>{machine.name}</Link>
                   </h3>
                 </div>
-                
               </div>
               <div className="flex flex-col sm:flex-row gap-2">
                 <Button size="sm" className="flex-1" asChild>
@@ -257,12 +255,15 @@ function MachineCard({
       <CardContent className="pt-0">
         <div className="space-y-3">
           <div className="flex gap-2">
-            <Button size="sm" className="flex-1" asChild>
-              <Link href={`/stock/${machine.slug}`}>
+            <Link href={`/stock/${machine.slug}`} className="flex-1">
+              <Button
+                size="sm"
+                variant="outline"
+                className="bg-transparent w-full">
                 <Eye className="h-4 w-4 mr-1" />
                 View
-              </Link>
-            </Button>
+              </Button>
+            </Link>
           </div>
         </div>
       </CardContent>

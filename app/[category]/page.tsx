@@ -13,12 +13,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
-import {
-  Search,
-  Grid,
-  List,
-  Eye,
-} from "lucide-react";
+import { Search, Grid, List, Eye } from "lucide-react";
 import { contentfulClient } from "@/lib/contentful";
 import Image from "next/image";
 
@@ -46,7 +41,7 @@ interface Machine {
 
 // Map slug to categories
 const SLUG_TO_CATEGORIES: Record<string, string[]> = {
-  "press": ["ONE COLOUR", "TWO COLOUR", "FOUR COLOUR +"],
+  press: ["ONE COLOUR", "TWO COLOUR", "FOUR COLOUR +"],
   "press-one": ["ONE COLOUR"],
   "press-two": ["TWO COLOUR"],
   "press-four": ["FOUR COLOUR +"],
@@ -57,7 +52,7 @@ const SLUG_TO_CATEGORIES: Record<string, string[]> = {
 
 // Map slug to display name
 const SLUG_TO_DISPLAY_NAME: Record<string, string> = {
-  "press": "Printing Press - All Categories",
+  press: "Printing Press - All Categories",
   "press-one": "One Colour Press",
   "press-two": "Two Colour Press",
   "press-four": "Four Colour + Press",
@@ -66,9 +61,13 @@ const SLUG_TO_DISPLAY_NAME: Record<string, string> = {
   "post-press": "Post Press",
 };
 
-export default function CategoryPage({ params }: { params: Promise<{ category: string }> }) {
+export default function CategoryPage({
+  params,
+}: {
+  params: Promise<{ category: string }>;
+}) {
   const { category: slug } = use(params);
-  
+
   const [machines, setMachines] = useState<Machine[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -109,20 +108,33 @@ export default function CategoryPage({ params }: { params: Promise<{ category: s
   // Filter machines based on slug
   const filteredMachines = machines.filter((machine) => {
     if (!slug) return true;
-    
+
     const categories = SLUG_TO_CATEGORIES[slug];
     if (!categories) return true;
-    
-    const machineCategoryName = machine.category?.fields?.name?.replace(/\s+/g, '');
-    return machineCategoryName && categories.some(cat => cat.replace(/\s+/g, '') === machineCategoryName);
+
+    const machineCategoryName = machine.category?.fields?.name?.replace(
+      /\s+/g,
+      ""
+    );
+    return (
+      machineCategoryName &&
+      categories.some((cat) => cat.replace(/\s+/g, "") === machineCategoryName)
+    );
   });
 
-  const categoryDisplayName = slug ? SLUG_TO_DISPLAY_NAME[slug] || "Stock Catalogue" : "Stock Catalogue";
-  
-  // Check if current page is a press category
-  const isPressCategory = ["press", "press-one", "press-two", "press-four"].includes(slug);
+  const categoryDisplayName = slug
+    ? SLUG_TO_DISPLAY_NAME[slug] || "Stock Catalogue"
+    : "Stock Catalogue";
 
-  console.log({machines, filteredMachines, slug});
+  // Check if current page is a press category
+  const isPressCategory = [
+    "press",
+    "press-one",
+    "press-two",
+    "press-four",
+  ].includes(slug);
+
+  console.log({ machines, filteredMachines, slug });
 
   if (loading) {
     return (
@@ -135,7 +147,9 @@ export default function CategoryPage({ params }: { params: Promise<{ category: s
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-3xl lg:text-4xl font-bold mb-4">{categoryDisplayName}</h1>
+        <h1 className="text-3xl lg:text-4xl font-bold mb-4">
+          {categoryDisplayName}
+        </h1>
         <p className="text-xl text-muted-foreground">
           Browse our extensive collection of printing and paper-converting
           machinery
@@ -143,40 +157,36 @@ export default function CategoryPage({ params }: { params: Promise<{ category: s
       </div>
 
       {/* Search and Filters */}
-      
+
       {/* Tabs for press categories */}
       {isPressCategory && (
         <div className="mb-6">
           <div className="flex gap-2 border-b">
             <Link href="/press">
-              <Button 
+              <Button
                 variant={slug === "press" ? "default" : "ghost"}
-                className="rounded-b-none"
-              >
+                className="rounded-b-none">
                 All
               </Button>
             </Link>
             <Link href="/press-one">
-              <Button 
+              <Button
                 variant={slug === "press-one" ? "default" : "ghost"}
-                className="rounded-b-none"
-              >
+                className="rounded-b-none">
                 ONE COLOUR
               </Button>
             </Link>
             <Link href="/press-two">
-              <Button 
+              <Button
                 variant={slug === "press-two" ? "default" : "ghost"}
-                className="rounded-b-none"
-              >
+                className="rounded-b-none">
                 TWO COLOUR
               </Button>
             </Link>
             <Link href="/press-four">
-              <Button 
+              <Button
                 variant={slug === "press-four" ? "default" : "ghost"}
-                className="rounded-b-none"
-              >
+                className="rounded-b-none">
                 FOUR COLOUR +
               </Button>
             </Link>
@@ -217,7 +227,9 @@ export default function CategoryPage({ params }: { params: Promise<{ category: s
           <CardContent className="p-12 text-center">
             <div className="text-muted-foreground mb-4">
               <Search className="h-12 w-12 mx-auto mb-4 opacity-50" />
-              <h3 className="text-lg font-semibold mb-2">No machine data found</h3>
+              <h3 className="text-lg font-semibold mb-2">
+                No machine data found
+              </h3>
               <p>There are currently no machines available in this category</p>
             </div>
           </CardContent>
@@ -246,7 +258,6 @@ function MachineCard({
   machine: Machine;
   viewMode: "grid" | "list";
 }) {
-
   const imageUrl = machine.images?.[0]?.url || "/placeholder.jpg";
 
   if (viewMode === "list") {
@@ -276,7 +287,6 @@ function MachineCard({
                     <Link href={`/stock/${machine.slug}`}>{machine.name}</Link>
                   </h3>
                 </div>
-                
               </div>
               <div className="flex flex-col sm:flex-row gap-2">
                 <Button size="sm" className="flex-1" asChild>
@@ -323,12 +333,15 @@ function MachineCard({
       <CardContent className="pt-0">
         <div className="space-y-3">
           <div className="flex gap-2">
-            <Button size="sm" className="flex-1" asChild>
-              <Link href={`/stock/${machine.slug}`}>
+            <Link href={`/stock/${machine.slug}`} className="flex-1">
+              <Button
+                size="sm"
+                variant="outline"
+                className="bg-transparent w-full">
                 <Eye className="h-4 w-4 mr-1" />
                 View
-              </Link>
-            </Button>
+              </Button>
+            </Link>
           </div>
         </div>
       </CardContent>
