@@ -11,6 +11,7 @@ import { Phone, Mail, Images } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import HeroSection from "@/components/hero";
+import TeamSection from "@/components/team-section";
 import {
   contentfulClient,
   getGalleryAlbums,
@@ -285,6 +286,9 @@ export default async function HomePage() {
           )}
         </div>
       </section>
+
+      {/* Team Section */}
+      {/* <TeamSection /> */}
 
       {/* Stats Section */}
       <section className="py-12 sm:py-16 bg-secondary text-secondary-foreground">
