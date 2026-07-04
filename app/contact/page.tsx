@@ -30,7 +30,7 @@ export default function ContactPage() {
     {
       icon: <Phone className="h-6 w-6" />,
       title: "Mobile",
-      details: ["01711-871147"],
+      details: ["+80 17 1187 1147"],
       description: "Call us for immediate assistance",
     },
     {
@@ -58,55 +58,32 @@ export default function ContactPage() {
 
   const offices = [
     {
-      city: "Dhaka (Headquarters)",
+      city: "Headquarters & Showroom",
       address: "55/2, Farm'r Mor, Paradogair, Matuail, Jatrabari, Dhaka 1362",
-      phone: "01711-871147",
+      phone: "+880 19 0289 3205",
       email: "info@seemaenterprisebd.com",
       isHeadquarters: true,
     },
     {
-      city: "Dhaka (Office)",
+      city: "Head Office",
       address: "23, 3H Distilary Rd, Dhaka 1204",
-      phone: "01711-871147",
+      phone: "+880 17 1101 6584",
       email: "info@seemaenterprisebd.com",
       isHeadquarters: false,
     },
   ];
 
   return (
-    <div className="flex flex-col">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-muted/30 to-muted/60 pt-10">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <Badge variant="secondary" className="mb-4">
-              Get in Touch
-            </Badge>
-            <h1 className="text-4xl lg:text-5xl font-bold mb-6 text-balance">
-              Let's Discuss Your{" "}
-              <span className="text-accent">Machinery Requirements</span>
-            </h1>
-            <p className="text-xl text-muted-foreground mb-8 text-pretty leading-relaxed">
-              Our experts are ready to help you find the perfect printing and
-              paper-converting equipment for your business. Contact us today for
-              personalized assistance.
-            </p>
-          </div>
-        </div>
-      </section>
-
+    <div className="flex flex-col pt-10">
       {/* Map and Info */}
       <section>
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Google Map */}
             <div className="lg:col-span-2">
               <Card className="overflow-hidden">
                 <CardHeader>
                   <CardTitle className="text-2xl">Our Location</CardTitle>
-                  <CardDescription>
-                    Visit us at our headquarters in Dhaka
-                  </CardDescription>
                 </CardHeader>
                 <CardContent className="p-0">
                   <iframe
@@ -174,11 +151,6 @@ export default function ContactPage() {
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-xl">{office.city}</CardTitle>
-                    {office.isHeadquarters && (
-                      <Badge className="bg-accent text-accent-foreground">
-                        Headquarters
-                      </Badge>
-                    )}
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -208,7 +180,7 @@ export default function ContactPage() {
       </section>
 
       {/* Leadership Section */}
-      <section className="py-14">
+      {/* <section className="py-14">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="border-l-4 border-primary pl-4 mb-10">
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight mb-1 uppercase">
@@ -245,7 +217,7 @@ export default function ContactPage() {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
     </div>
   );
 }

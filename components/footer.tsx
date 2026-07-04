@@ -72,6 +72,13 @@ export function Footer() {
               </li>
               <li>
                 <Link
+                  href="/team"
+                  className="text-muted-foreground hover:text-primary">
+                  Our Team
+                </Link>
+              </li>
+              <li>
+                <Link
                   href="/services"
                   className="text-muted-foreground hover:text-primary">
                   Our Services
@@ -143,7 +150,7 @@ export function Footer() {
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="h-4 w-4 text-muted-foreground" />
-                <span className="text-muted-foreground">01711-871147</span>
+                <span className="text-muted-foreground">+880 19 0289 3205</span>
               </div>
               <div className="flex items-center gap-2">
                 <Mail className="h-4 w-4 text-muted-foreground" />

@@ -15,6 +15,7 @@ export function Navigation() {
   const navItems = [
     { href: "/", label: "HOME" },
     { href: "/about", label: "ABOUT US" },
+    { href: "/team", label: "OUR TEAM" },
   ];
 
   // Define your machine categories organized by columns
