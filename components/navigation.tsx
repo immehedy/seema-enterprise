@@ -75,12 +75,12 @@ export function Navigation() {
           {/* Logo */}
           <Link href="/" className="">
             <Image
-              src="/logo.svg"
+              src="/logo.png"
               alt="Seema Enterprise"
               title="Seema Enterprise"
               width={300}
               height={100}
-              unoptimized
+              sizes="(max-width: 1024px) 200px, 300px"
               className="object-contain h-auto w-[200px] md:w-[300px] mt-5"
             />
           </Link>
