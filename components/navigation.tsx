@@ -78,9 +78,10 @@ export function Navigation() {
               src="/logo.svg"
               alt="Seema Enterprise"
               title="Seema Enterprise"
-              width={40}
-              height={40}
-              className=" object-cover h-auto w-[200px] md:w-[300px] mt-5"
+              width={300}
+              height={100}
+              unoptimized
+              className="object-contain h-auto w-[200px] md:w-[300px] mt-5"
             />
           </Link>
 

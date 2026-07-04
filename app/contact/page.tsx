@@ -145,7 +145,7 @@ export default function ContactPage() {
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {offices.map((office, index) => (
               <Card key={index} className="hover:shadow-lg transition-shadow">
                 <CardHeader>
@@ -178,46 +178,6 @@ export default function ContactPage() {
           </div>
         </div>
       </section>
-
-      {/* Leadership Section */}
-      {/* <section className="py-14">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="border-l-4 border-primary pl-4 mb-10">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight mb-1 uppercase">
-              Our Leadership
-            </h2>
-            <p className="text-muted-foreground text-sm">
-              Meet the people leading Seema Enterprise
-            </p>
-          </div>
-
-          <div className="flex flex-wrap gap-8">
-            {leaders.map((leader, index) => (
-              <div
-                key={index}
-                className="flex flex-col items-center text-center gap-3">
-                <div className="w-28 h-28 rounded-full overflow-hidden bg-muted border">
-                  <img
-                    src={leader.image}
-                    alt={leader.name}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      (e.currentTarget as HTMLImageElement).src =
-                        "/placeholder.svg";
-                    }}
-                  />
-                </div>
-                <div>
-                  <p className="font-semibold text-sm">{leader.name}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    {leader.designation}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section> */}
     </div>
   );
 }
