@@ -11,7 +11,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 
 import { Search, Grid, List, Eye } from "lucide-react";
 import { contentfulClient } from "@/lib/contentful";
@@ -262,10 +261,10 @@ function MachineCard({
 
   if (viewMode === "list") {
     return (
-      <Card className="hover:shadow-lg transition-shadow">
+      <Card className={`hover:shadow-lg transition-shadow${!machine.isAvailable ? " opacity-70" : ""}`}>
         <CardContent className="p-6">
           <div className="flex flex-col md:flex-row gap-6">
-            <div className="relative w-full md:w-48 h-32 flex-shrink-0">
+            <div className="relative w-full md:w-48 h-32 flex-shrink-0 overflow-hidden rounded-lg">
               <Image
                 src={imageUrl}
                 alt={machine.name}
@@ -275,9 +274,11 @@ function MachineCard({
                 style={{ objectFit: "cover" }}
               />
               {!machine.isAvailable && (
-                <Badge variant="destructive" className="absolute top-2 right-2">
-                  Sold
-                </Badge>
+                <div className="absolute top-0 right-0 w-20 h-20 overflow-hidden rounded-tr-lg pointer-events-none">
+                  <div className="absolute top-4 -right-5 w-28 bg-red-600/80 py-1 rotate-45 text-center">
+                    <span className="text-white/90 text-[9px] font-bold tracking-widest uppercase">Sold Out</span>
+                  </div>
+                </div>
               )}
             </div>
             <div className="flex-1 space-y-3">
@@ -306,7 +307,7 @@ function MachineCard({
   // Grid view
   return (
     <Card className="group hover:shadow-lg transition-shadow">
-      <div className="relative">
+      <div className="relative overflow-hidden rounded-t-lg">
         <Image
           src={imageUrl}
           alt={machine.name}
@@ -316,9 +317,11 @@ function MachineCard({
           style={{ objectFit: "cover" }}
         />
         {!machine.isAvailable && (
-          <Badge variant="destructive" className="absolute top-3 right-3">
-            Sold
-          </Badge>
+          <div className="absolute top-0 right-0 w-28 h-28 overflow-hidden rounded-tr-lg pointer-events-none">
+            <div className="absolute top-5 -right-6 w-36 bg-red-600/80 py-1.5 rotate-45 text-center">
+              <span className="text-white/90 text-[10px] font-bold tracking-widest uppercase">Sold Out</span>
+            </div>
+          </div>
         )}
       </div>
       <CardHeader className="pb-3">
