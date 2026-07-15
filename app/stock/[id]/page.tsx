@@ -122,17 +122,24 @@ export default function ProductDetailPage() {
         <div>
           <Card>
             <CardContent className="p-0">
-              <div className="relative">
+              <div className="relative overflow-hidden rounded-t-lg">
                 <img
                   src={images[currentImageIndex]}
                   alt={`${machine.fields.name} - Image ${
                     currentImageIndex + 1
                   }`}
-                  className="w-full h-96 lg:h-[500px] object-cover rounded-t-lg -mt-10"
+                  className="w-full h-96 lg:h-[500px] object-cover rounded-t-lg"
                   onError={(e) => {
                     e.currentTarget.src = "/placeholder.svg";
                   }}
                 />
+                {!machine.fields.isAvailable && (
+                  <div className="absolute top-0 right-0 w-40 h-40 overflow-hidden rounded-tr-lg pointer-events-none">
+                    <div className="absolute top-8 -right-8 w-52 bg-red-600/80 py-2 rotate-45 text-center">
+                      <span className="text-white/90 text-sm font-bold tracking-widest uppercase">Sold Out</span>
+                    </div>
+                  </div>
+                )}
 
                 {/* Image Navigation */}
                 {images.length > 1 && (
