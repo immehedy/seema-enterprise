@@ -4,6 +4,7 @@ export default function HeroSection() {
   const slides = [
     {
       image: "/banner1.png",
+      mobileImage: "/mobile-banner.png",
       alt: "Heildelberg CD 102-4LX",
     },
     {
