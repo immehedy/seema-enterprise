@@ -270,7 +270,7 @@ function MachineCard({
                 alt={machine.name}
                 width={800}
                 height={600}
-                className="w-full h-full object-cover rounded-lg -mt-6"
+                className="w-full h-full object-cover rounded-lg"
                 style={{ objectFit: "cover" }}
               />
               {!machine.isAvailable && (
@@ -307,13 +307,13 @@ function MachineCard({
   // Grid view
   return (
     <Card className="group hover:shadow-lg transition-shadow">
-      <div className="relative overflow-hidden rounded-t-lg">
+      <div className="relative overflow-hidden rounded-t-lg -mx-0 -mt-6">
         <Image
           src={imageUrl}
           alt={machine.name}
           width={800}
           height={192}
-          className="w-full h-48 object-cover rounded-t-lg -mt-6"
+          className="w-full h-48 object-cover rounded-t-lg"
           style={{ objectFit: "cover" }}
         />
         {!machine.isAvailable && (
