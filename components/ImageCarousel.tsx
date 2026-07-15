@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface Slide {
   image: string;
+  mobileImage?: string;
   alt: string;
 }
 
@@ -49,11 +50,19 @@ export default function ImageCarousel({
           className={`absolute inset-0 transition-all duration-700 ease-in-out ${
             i === current ? "opacity-100 scale-100" : "opacity-0 scale-105"
           }`}>
-          <img
-            src={slide.image}
-            alt={slide.alt}
-            className="w-full h-full object-cover"
-          />
+          <picture>
+            {slide.mobileImage && (
+              <source
+                media="(max-width: 767px)"
+                srcSet={slide.mobileImage}
+              />
+            )}
+            <img
+              src={slide.image}
+              alt={slide.alt}
+              className="w-full h-full object-cover"
+            />
+          </picture>
         </div>
       ))}
 
