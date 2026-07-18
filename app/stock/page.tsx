@@ -35,6 +35,7 @@ import {
   Eye,
   Heart,
   Phone,
+  Play,
 } from "lucide-react";
 import { contentfulClient } from "@/lib/contentful";
 import Image from "next/image";
@@ -55,6 +56,15 @@ interface Machine {
   isAvailable: boolean;
   isFeatured: boolean;
   images?: { url: string }[];
+}
+
+// Simple check to decide whether a media URL should be rendered as a <video>
+// instead of an <img>/<Image>. Covers common contentful/asset video extensions.
+const VIDEO_EXTENSIONS = [".mp4", ".webm", ".mov", ".ogg", ".m4v"];
+function isVideoUrl(url: string | undefined | null): boolean {
+  if (!url) return false;
+  const clean = url.split("?")[0].toLowerCase();
+  return VIDEO_EXTENSIONS.some((ext) => clean.endsWith(ext));
 }
 
 export default function StockPage() {
@@ -179,7 +189,8 @@ function MachineCard({
   machine: Machine;
   viewMode: "grid" | "list";
 }) {
-  const imageUrl = machine.images?.[0]?.url || "/placeholder.jpg";
+  const mediaUrl = machine.images?.[0]?.url || "/placeholder.jpg";
+  const mediaIsVideo = isVideoUrl(mediaUrl);
 
   if (viewMode === "list") {
     return (
@@ -187,18 +198,37 @@ function MachineCard({
         <CardContent className="p-6">
           <div className="flex flex-col md:flex-row gap-6">
             <div className="relative w-full md:w-48 h-32 flex-shrink-0 overflow-hidden rounded-lg">
-              <Image
-                src={imageUrl}
-                alt={machine.name}
-                width={800}
-                height={600}
-                className="w-full h-full object-cover rounded-lg"
-                style={{ objectFit: "cover" }}
-              />
+              {mediaIsVideo ? (
+                <>
+                  <video
+                    src={mediaUrl}
+                    className="w-full h-full object-cover rounded-lg block"
+                    muted
+                    playsInline
+                    preload="metadata"
+                  />
+                  <span className="absolute inset-0 flex items-center justify-center bg-black/20 pointer-events-none">
+                    <span className="flex items-center justify-center w-8 h-8 rounded-full bg-black/50">
+                      <Play className="h-4 w-4 text-white fill-white" />
+                    </span>
+                  </span>
+                </>
+              ) : (
+                <Image
+                  src={mediaUrl}
+                  alt={machine.name}
+                  width={800}
+                  height={600}
+                  className="w-full h-full object-cover rounded-lg"
+                  style={{ objectFit: "cover" }}
+                />
+              )}
               {!machine.isAvailable && (
                 <div className="absolute top-0 right-0 w-20 h-20 overflow-hidden rounded-tr-lg pointer-events-none">
                   <div className="absolute top-4 -right-5 w-28 bg-red-600/80 py-1 rotate-45 text-center">
-                    <span className="text-white/90 text-[9px] font-bold tracking-widest uppercase">Sold Out</span>
+                    <span className="text-white/90 text-[9px] font-bold tracking-widest uppercase">
+                      Sold Out
+                    </span>
                   </div>
                 </div>
               )}
@@ -230,18 +260,37 @@ function MachineCard({
   return (
     <Card className="group hover:shadow-lg transition-shadow">
       <div className="relative overflow-hidden rounded-t-lg -mx-0 -mt-6">
-        <Image
-          src={imageUrl}
-          alt={machine.name}
-          width={800}
-          height={192}
-          className="w-full h-48 object-cover rounded-t-lg"
-          style={{ objectFit: "cover" }}
-        />
+        {mediaIsVideo ? (
+          <>
+            <video
+              src={mediaUrl}
+              className="w-full h-48 object-cover rounded-t-lg block"
+              muted
+              playsInline
+              preload="metadata"
+            />
+            <span className="absolute inset-0 flex items-center justify-center bg-black/20 pointer-events-none">
+              <span className="flex items-center justify-center w-10 h-10 rounded-full bg-black/50">
+                <Play className="h-5 w-5 text-white fill-white" />
+              </span>
+            </span>
+          </>
+        ) : (
+          <Image
+            src={mediaUrl}
+            alt={machine.name}
+            width={800}
+            height={192}
+            className="w-full h-48 object-cover rounded-t-lg"
+            style={{ objectFit: "cover" }}
+          />
+        )}
         {!machine.isAvailable && (
           <div className="absolute top-0 right-0 w-28 h-28 overflow-hidden rounded-tr-lg pointer-events-none">
             <div className="absolute top-5 -right-6 w-36 bg-red-600/80 py-1.5 rotate-45 text-center">
-              <span className="text-white/90 text-[10px] font-bold tracking-widest uppercase">Sold Out</span>
+              <span className="text-white/90 text-[10px] font-bold tracking-widest uppercase">
+                Sold Out
+              </span>
             </div>
           </div>
         )}

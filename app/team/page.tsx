@@ -6,7 +6,7 @@ const leadership = [
   {
     name: "Abdul Hannan Mridha",
     designation: "Chairman",
-    image: "/placeholder.jpg",
+    image: "/chairman.jpg",
     tier: "chairman",
   },
   {
@@ -31,12 +31,12 @@ const management = [
   {
     name: "MD. Sohel",
     designation: "Sr. Manager (Accounts)",
-    image: "/placeholder.jpg",
+    image: "/sohel.png",
   },
   {
     name: "MD. Hafizur Rahman",
     designation: "Asst. Manager (Accounts)",
-    image: "/placeholder.jpg",
+    image: "/hafiz.png",
   },
 ];
 
@@ -73,14 +73,15 @@ export default function TeamPage() {
 
           <div className="flex flex-col sm:flex-row justify-center gap-10 max-w-2xl mx-auto">
             {leadership.map((person) => (
-              <div key={person.name} className="flex flex-col items-center flex-1">
+              <div
+                key={person.name}
+                className="flex flex-col items-center flex-1">
                 <div
                   className={`relative rounded-full overflow-hidden border-4 shadow-xl mb-5 ${
                     person.tier === "chairman"
                       ? "w-44 h-44 border-accent"
                       : "w-36 h-36 border-primary"
-                  }`}
-                >
+                  }`}>
                   <Image
                     src={person.image}
                     alt={person.name}
@@ -91,8 +92,7 @@ export default function TeamPage() {
                 <h3
                   className={`font-bold text-center ${
                     person.tier === "chairman" ? "text-2xl" : "text-xl"
-                  }`}
-                >
+                  }`}>
                   {person.name}
                 </h3>
                 <span
@@ -100,8 +100,7 @@ export default function TeamPage() {
                     person.tier === "chairman"
                       ? "bg-accent/10 text-accent"
                       : "bg-primary/10 text-primary"
-                  }`}
-                >
+                  }`}>
                   {person.designation}
                 </span>
               </div>
@@ -131,21 +130,20 @@ export default function TeamPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 max-w-5xl mx-auto my-auto">
             {management.map((person) => (
               <Card
                 key={person.name}
-                className="group hover:shadow-lg transition-shadow duration-300 overflow-hidden"
-              >
-                <div className="relative w-full aspect-square bg-muted">
+                className="group hover:shadow-lg transition-shadow duration-300 overflow-hidden">
+                <div className="relative w-full aspect-square">
                   <Image
                     src={person.image}
                     alt={person.name}
                     fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    className="object-cover object-top group-hover:scale-110 transition-transform"
                   />
                 </div>
-                <CardContent className="p-5 text-center">
+                <CardContent className="px-5 text-center">
                   <h3 className="text-lg font-bold">{person.name}</h3>
                   <p className="mt-1 text-sm text-muted-foreground font-medium">
                     {person.designation}
