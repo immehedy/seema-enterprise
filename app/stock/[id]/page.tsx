@@ -19,13 +19,19 @@ import {
   Loader2,
 } from "lucide-react";
 import { useParams } from "next/navigation";
-import {
-  getMachineBySlug,
-  getImageUrl,
-} from "@/lib/contentful";
+import { getMachineBySlug, getImageUrl } from "@/lib/contentful";
 import type { MachineEntry } from "@/types/contentful";
 import { documentToHtmlString } from "@contentful/rich-text-html-renderer";
 import { DialogTitle } from "@radix-ui/react-dialog";
+
+// Simple check to decide whether a media URL should be rendered as a <video>
+// instead of an <img>. Covers common contentful/asset video extensions.
+const VIDEO_EXTENSIONS = [".mp4", ".webm", ".mov", ".ogg", ".m4v"];
+function isVideoUrl(url: string | undefined | null): boolean {
+  if (!url) return false;
+  const clean = url.split("?")[0].toLowerCase();
+  return VIDEO_EXTENSIONS.some((ext) => clean.endsWith(ext));
+}
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -115,28 +121,47 @@ export default function ProductDetailPage() {
     setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
   };
 
+  const currentSrc = images[currentImageIndex];
+  const currentIsVideo = isVideoUrl(currentSrc);
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Image Gallery */}
         <div>
-          <Card>
+          {/* py-0 + gap-0 kill the Card component's built-in vertical padding
+              (shadcn's Card wrapper adds py-6 by default), which was the
+              source of the gap above the media. */}
+          <Card className="py-0 gap-0">
             <CardContent className="p-0">
               <div className="relative overflow-hidden rounded-t-lg">
-                <img
-                  src={images[currentImageIndex]}
-                  alt={`${machine.fields.name} - Image ${
-                    currentImageIndex + 1
-                  }`}
-                  className="w-full h-96 lg:h-[500px] object-cover rounded-t-lg"
-                  onError={(e) => {
-                    e.currentTarget.src = "/placeholder.svg";
-                  }}
-                />
+                {currentIsVideo ? (
+                  <video
+                    key={currentSrc}
+                    src={currentSrc}
+                    className="w-full h-96 lg:h-[500px] object-cover rounded-t-lg block"
+                    controls
+                    playsInline
+                    preload="metadata"
+                  />
+                ) : (
+                  <img
+                    src={currentSrc}
+                    alt={`${machine.fields.name} - Image ${
+                      currentImageIndex + 1
+                    }`}
+                    className="w-full h-96 lg:h-[500px] object-cover rounded-t-lg block"
+                    onError={(e) => {
+                      e.currentTarget.src = "/placeholder.svg";
+                    }}
+                  />
+                )}
                 {!machine.fields.isAvailable && (
                   <div className="absolute top-0 right-0 w-40 h-40 overflow-hidden rounded-tr-lg pointer-events-none">
                     <div className="absolute top-8 -right-8 w-52 bg-red-600/80 py-2 rotate-45 text-center">
-                      <span className="text-white/90 text-sm font-bold tracking-widest uppercase">Sold Out</span>
+                      <span className="text-white/90 text-sm font-bold tracking-widest uppercase">
+                        Sold Out
+                      </span>
                     </div>
                   </div>
                 )}
@@ -168,55 +193,75 @@ export default function ProductDetailPage() {
                   {currentImageIndex + 1} / {images.length}
                 </div>
 
-                {/* Expand Button */}
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button
-                      variant="secondary"
-                      size="sm"
-                      className="absolute top-4 right-4"
-                      aria-label="View full size image">
-                      <Maximize2 className="h-4 w-4" />
-                    </Button>
-                  </DialogTrigger>
-                  <DialogTitle></DialogTitle>
-                  <DialogContent className="max-w-[98vw] w-auto h-auto max-h-[98vh] p-1">
-                    <DialogTitle className="sr-only">
-                      Full Size Image
-                    </DialogTitle>
-                    <img
-                      src={images[currentImageIndex]}
-                      alt={`${machine.fields.name} - Full Size`}
-                      className="w-full h-full max-h-[95vh] object-contain"
-                    />
-                  </DialogContent>
-                </Dialog>
+                {/* Expand Button (only useful for images; video already has native fullscreen via controls) */}
+                {!currentIsVideo && (
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        className="absolute top-4 right-4"
+                        aria-label="View full size image">
+                        <Maximize2 className="h-4 w-4" />
+                      </Button>
+                    </DialogTrigger>
+                    <DialogTitle></DialogTitle>
+                    <DialogContent className="max-w-[98vw] w-auto h-auto max-h-[98vh] p-1">
+                      <DialogTitle className="sr-only">
+                        Full Size Image
+                      </DialogTitle>
+                      <img
+                        src={currentSrc}
+                        alt={`${machine.fields.name} - Full Size`}
+                        className="w-full h-full max-h-[95vh] object-contain"
+                      />
+                    </DialogContent>
+                  </Dialog>
+                )}
               </div>
 
               {/* Thumbnail Gallery */}
               {images.length > 1 && (
                 <div className="p-4">
                   <div className="flex gap-2 overflow-x-auto">
-                    {images.map((image, index) => (
-                      <button
-                        key={index}
-                        onClick={() => setCurrentImageIndex(index)}
-                        className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-colors ${
-                          index === currentImageIndex
-                            ? "border-accent"
-                            : "border-border"
-                        }`}
-                        aria-label={`View image ${index + 1}`}>
-                        <img
-                          src={image}
-                          alt={`Thumbnail ${index + 1}`}
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            e.currentTarget.src = "/placeholder.svg";
-                          }}
-                        />
-                      </button>
-                    ))}
+                    {images.map((mediaUrl, index) => {
+                      const thumbIsVideo = isVideoUrl(mediaUrl);
+                      return (
+                        <button
+                          key={index}
+                          onClick={() => setCurrentImageIndex(index)}
+                          className={`relative flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-colors ${
+                            index === currentImageIndex
+                              ? "border-accent"
+                              : "border-border"
+                          }`}
+                          aria-label={`View media ${index + 1}`}>
+                          {thumbIsVideo ? (
+                            <>
+                              <video
+                                src={mediaUrl}
+                                className="w-full h-full object-cover block"
+                                muted
+                                playsInline
+                                preload="metadata"
+                              />
+                              <span className="absolute inset-0 flex items-center justify-center bg-black/20">
+                                <span className="w-0 h-0 border-y-4 border-y-transparent border-l-[7px] border-l-white ml-0.5" />
+                              </span>
+                            </>
+                          ) : (
+                            <img
+                              src={mediaUrl}
+                              alt={`Thumbnail ${index + 1}`}
+                              className="w-full h-full object-cover block"
+                              onError={(e) => {
+                                e.currentTarget.src = "/placeholder.svg";
+                              }}
+                            />
+                          )}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               )}
@@ -279,8 +324,8 @@ export default function ProductDetailPage() {
                     </span>
                   </div>
                 )}
-                 {/* Series */}
-                 {machine.fields.series && (
+                {/* Series */}
+                {machine.fields.series && (
                   <div className="flex py-3 border-b">
                     <span className="font-medium w-32">Series</span>
                     <span className="text-muted-foreground flex-1">
@@ -340,9 +385,7 @@ export default function ProductDetailPage() {
                 {/* Availability */}
                 <div className="flex py-3">
                   <span className="font-medium w-32">Available</span>
-                  <span className="flex-1">
-                      {machine.fields.availableBy}
-                  </span>
+                  <span className="flex-1">{machine.fields.availableBy}</span>
                 </div>
               </div>
             </CardContent>

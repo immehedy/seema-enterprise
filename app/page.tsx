@@ -1,17 +1,9 @@
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
 import { Phone, Mail, Images } from "lucide-react";
 import Link from "next/link";
-import Image from "next/image";
 import HeroSection from "@/components/hero";
-import TeamSection from "@/components/team-section";
+import { MachineCard } from "@/components/machine-card";
 import {
   contentfulClient,
   getGalleryAlbums,
@@ -53,7 +45,7 @@ export default async function HomePage() {
   const machines = await getMachines();
   const galleryAlbums = await getGalleryAlbums(6);
 
-  // Sort by creation date (newest first) and show only the latest 5
+  // Sort by creation date (newest first) and show only the latest 5 featured
   const featuredProducts = machines
     .filter((machine) => machine.isFeatured === true)
     .sort(
@@ -61,6 +53,14 @@ export default async function HomePage() {
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     )
     .slice(0, 5);
+
+  // All machines, newest first — capped for homepage display
+  const allMachines = [...machines]
+    .sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    )
+    .slice(0, 8);
 
   const MachineTyupes = [
     {
@@ -100,6 +100,7 @@ export default async function HomePage() {
     <div className="flex flex-col space-y-4">
       {/* Hero Section */}
       <HeroSection />
+
       {/* Machine Types  */}
       <section className="">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -131,15 +132,14 @@ export default async function HomePage() {
                   />
                 </div>
 
-                {/* Wrapper to control flex layout */}
                 <div className="flex flex-col flex-grow text-center">
-                  <CardHeader className="flex-grow">
-                    <CardTitle className="text-base sm:text-lg leading-tight group-hover:text-blue-600 transition-colors">
+                  <div className="flex-grow p-6">
+                    <h3 className="text-base sm:text-lg leading-tight font-semibold group-hover:text-blue-600 transition-colors">
                       <Link href={machine.url}>{machine.title}</Link>
-                    </CardTitle>
-                  </CardHeader>
+                    </h3>
+                  </div>
 
-                  <CardContent className="pt-2">
+                  <div className="pt-2 p-6">
                     <Link href={machine.url}>
                       <Button
                         size="sm"
@@ -148,13 +148,14 @@ export default async function HomePage() {
                         Visit Page
                       </Button>
                     </Link>
-                  </CardContent>
+                  </div>
                 </div>
               </Card>
             ))}
           </div>
         </div>
       </section>
+
       {/* Featured Products */}
       <section className="">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -169,49 +170,60 @@ export default async function HomePage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            {featuredProducts.map((product, index) => (
-              <Card
-                key={product.slug || index}
-                className="group hover:shadow-lg transition-shadow flex flex-col h-full">
-                <div className="relative">
-                  <Badge variant="secondary" className=" mx-2 absolute -mt-4">
-                    Featured
-                  </Badge>
-                  <img
-                    src={
-                      product.images?.[0]?.url ||
-                      "https://images.unsplash.com/photo-1563906267088-b029e7101114?w=800&h=400&fit=crop"
-                    }
-                    alt={product.name}
-                    className="w-full h-48 sm:h-56 lg:h-48 object-cover rounded-t-lg -mt-6"
-                  />
-                </div>
+          {featuredProducts.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 gap-6 mb-12">
+              {featuredProducts.map((machine, index) => (
+                <MachineCard key={machine.slug || index} machine={machine} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-16 text-muted-foreground mb-12">
+              <p>No featured machines available yet. Check back soon!</p>
+            </div>
+          )}
+        </div>
+      </section>
 
-                {/* Wrapper to control flex layout */}
-                <div className="flex flex-col flex-grow">
-                  <CardHeader className="pb-3 flex-grow">
-                    <CardTitle className="text-base sm:text-lg leading-tight group-hover:text-blue-600 transition-colors">
-                      <Link href={`/stock/${product.slug}`}>
-                        {product.name}
-                      </Link>
-                    </CardTitle>
-                  </CardHeader>
-
-                  <CardContent className="pt-4">
-                    <Link href={`/stock/${product.slug}`}>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="bg-transparent w-full">
-                        View Details
-                      </Button>
-                    </Link>
-                  </CardContent>
-                </div>
-              </Card>
-            ))}
+      {/* All Machines */}
+      <section className="">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-end justify-between mb-8">
+            <div className="border-l-4 border-primary pl-4">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight mb-1 uppercase">
+                All Machines
+              </h2>
+              <p className="text-muted-foreground text-sm">
+                Explore our full range of printing and paper-converting
+                machinery
+              </p>
+            </div>
+            <Link href="/press">
+              <Button variant="outline" className="hidden sm:flex gap-2">
+                View All
+              </Button>
+            </Link>
           </div>
+
+          {allMachines.length > 0 ? (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                {allMachines.map((machine, index) => (
+                  <MachineCard key={machine.slug || index} machine={machine} />
+                ))}
+              </div>
+              <div className="text-center sm:hidden">
+                <Link href="/press">
+                  <Button variant="outline" className="gap-2">
+                    View All Machines
+                  </Button>
+                </Link>
+              </div>
+            </>
+          ) : (
+            <div className="text-center py-16 text-muted-foreground">
+              <p>No machines available yet. Check back soon!</p>
+            </div>
+          )}
         </div>
       </section>
 
