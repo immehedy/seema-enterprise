@@ -34,14 +34,8 @@ export function MachineCard({ machine }: { machine: Machine }) {
 
   const rows: InfoRow[] = [
     { label: "Reference", value: machine.refNo },
-    {
-      label: "Model",
-      value: [machine.brand, machine.model].filter(Boolean).join(" "),
-    },
-    { label: "Year", value: machine.year },
     { label: "Size", value: machine.size },
-    { label: "Speed", value: machine.speed },
-    { label: "Origin", value: machine.origin },
+    { label: "Year", value: machine.year },
     { label: "Available from", value: machine.availableBy },
   ].filter((row) => row.value && row.value !== "");
 
@@ -53,7 +47,7 @@ export function MachineCard({ machine }: { machine: Machine }) {
   }
 
   return (
-    <div className="flex flex-col h-[620px] rounded-lg overflow-hidden border shadow-sm hover:shadow-lg transition-shadow bg-white">
+    <div className="flex flex-col h-[500px] rounded-lg overflow-hidden border shadow-sm hover:shadow-lg transition-shadow bg-white">
       {/* Header - fixed height */}
       <div className="h-16 flex items-center bg-[#4043a6] px-5">
         <h3 className="text-white font-bold uppercase tracking-tight text-base leading-snug line-clamp-2">
@@ -81,7 +75,7 @@ export function MachineCard({ machine }: { machine: Machine }) {
       </div>
 
       {/* Info panel - fixed height, same row count every card */}
-      <div className="bg-gray-100 px-5 py-4 h-[224px] overflow-hidden">
+      <div className="bg-gray-100 px-5 py-4 h-[140px] overflow-hidden">
         <dl className="space-y-2">
           {displayRows.map((row, i) => (
             <div key={i} className="flex justify-between gap-4 text-sm h-5">
