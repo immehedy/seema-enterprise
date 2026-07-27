@@ -52,7 +52,7 @@ export default async function HomePage() {
       (a, b) =>
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     )
-    .slice(0, 5);
+    .slice(0, 6);
 
   // All machines, newest first — capped for homepage display
   const allMachines = [...machines]
