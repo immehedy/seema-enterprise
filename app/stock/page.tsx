@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
-import Link from "next/link";
+import { useEffect, useState, useMemo } from "react";import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -94,7 +93,14 @@ export default function StockPage() {
           };
         }) as Machine[];
 
-        setMachines(mapped);
+        // Available machines first, sold out last
+        const sorted = [...mapped].sort((a, b) => {
+          const aAvailable = a.isAvailable ? 0 : 1;
+          const bAvailable = b.isAvailable ? 0 : 1;
+          return aAvailable - bAvailable;
+        });
+
+        setMachines(sorted);
       } catch (error) {
         console.error("Error fetching machines from Contentful:", error);
       } finally {

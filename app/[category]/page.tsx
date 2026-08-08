@@ -2,7 +2,7 @@
 
 import { use, useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -41,7 +41,6 @@ interface Machine {
 
 // Map slug to categories
 const SLUG_TO_CATEGORIES: Record<string, string[]> = {
-  press: ["ONE COLOUR", "TWO COLOUR", "FOUR COLOUR +"],
   "press-one": ["ONE COLOUR"],
   "press-two": ["TWO COLOUR"],
   "press-four": ["FOUR COLOUR +"],
@@ -52,7 +51,6 @@ const SLUG_TO_CATEGORIES: Record<string, string[]> = {
 
 // Map slug to display name
 const SLUG_TO_DISPLAY_NAME: Record<string, string> = {
-  press: "Printing Press - All Categories",
   "press-one": "One Colour Press",
   "press-two": "Two Colour Press",
   "press-four": "Four Colour + Press",
@@ -67,6 +65,11 @@ export default function CategoryPage({
   params: Promise<{ category: string }>;
 }) {
   const { category: slug } = use(params);
+
+  // The combined "All" press page has been removed; redirect old /press URL.
+  if (slug === "press") {
+    notFound();
+  }
 
   const [machines, setMachines] = useState<Machine[]>([]);
   const [loading, setLoading] = useState(true);
@@ -106,33 +109,37 @@ export default function CategoryPage({
   }, []);
 
   // Filter machines based on slug
-  const filteredMachines = machines.filter((machine) => {
-    if (!slug) return true;
+  const filteredMachines = machines
+    .filter((machine) => {
+      if (!slug) return true;
 
-    const categories = SLUG_TO_CATEGORIES[slug];
-    if (!categories) return true;
+      const categories = SLUG_TO_CATEGORIES[slug];
+      if (!categories) return true;
 
-    const machineCategoryName = machine.category?.fields?.name?.replace(
-      /\s+/g,
-      ""
-    );
-    return (
-      machineCategoryName &&
-      categories.some((cat) => cat.replace(/\s+/g, "") === machineCategoryName)
-    );
-  });
+      const machineCategoryName = machine.category?.fields?.name?.replace(
+        /\s+/g,
+        ""
+      );
+      return (
+        machineCategoryName &&
+        categories.some((cat) => cat.replace(/\s+/g, "") === machineCategoryName)
+      );
+    })
+    .sort((a, b) => {
+      // Available machines first, sold out last
+      const aAvailable = a.isAvailable ? 0 : 1;
+      const bAvailable = b.isAvailable ? 0 : 1;
+      return aAvailable - bAvailable;
+    });
 
   const categoryDisplayName = slug
     ? SLUG_TO_DISPLAY_NAME[slug] || "Stock Catalogue"
     : "Stock Catalogue";
 
   // Check if current page is a press category
-  const isPressCategory = [
-    "press",
-    "press-one",
-    "press-two",
-    "press-four",
-  ].includes(slug);
+  const isPressCategory = ["press-one", "press-two", "press-four"].includes(
+    slug
+  );
 
   console.log({ machines, filteredMachines, slug });
 
@@ -162,13 +169,6 @@ export default function CategoryPage({
       {isPressCategory && (
         <div className="mb-6">
           <div className="flex gap-2 border-b">
-            <Link href="/press">
-              <Button
-                variant={slug === "press" ? "default" : "ghost"}
-                className="rounded-b-none">
-                All
-              </Button>
-            </Link>
             <Link href="/press-one">
               <Button
                 variant={slug === "press-one" ? "default" : "ghost"}

@@ -45,29 +45,31 @@ export default async function HomePage() {
   const machines = await getMachines();
   const galleryAlbums = await getGalleryAlbums(6);
 
-  // Sort by creation date (newest first) and show only the latest 5 featured
+  // Sort by creation date (newest first) and show only the latest 5 featured.
+  // Available machines take priority over sold out ones.
+  const byAvailabilityThenDate = (a: any, b: any) => {
+    const aAvailable = a.isAvailable ? 0 : 1;
+    const bAvailable = b.isAvailable ? 0 : 1;
+    if (aAvailable !== bAvailable) return aAvailable - bAvailable;
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+  };
+
   const featuredProducts = machines
-    .filter((machine) => machine.isFeatured === true)
-    .sort(
-      (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    .filter(
+      (machine) => machine.isFeatured === true && machine.isAvailable !== false
     )
+    .sort(byAvailabilityThenDate)
     .slice(0, 6);
 
-  // All machines, newest first — capped for homepage display
-  const allMachines = [...machines]
-    .sort(
-      (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    )
-    .slice(0, 8);
+  // All machines, available first then newest first — capped for homepage display
+  const allMachines = [...machines].sort(byAvailabilityThenDate).slice(0, 8);
 
   const MachineTyupes = [
     {
       image: "/press.jpeg",
       alt: "PRESS MACHINE",
       title: "PRESS",
-      url: "/press",
+      url: "/press-one",
     },
     {
       image: "/cutting-machine.png",
@@ -197,7 +199,7 @@ export default async function HomePage() {
                 machinery
               </p>
             </div>
-            <Link href="/press">
+            <Link href="/stock">
               <Button variant="outline" className="hidden sm:flex gap-2">
                 View All
               </Button>
@@ -212,7 +214,7 @@ export default async function HomePage() {
                 ))}
               </div>
               <div className="text-center sm:hidden">
-                <Link href="/press">
+                <Link href="/stock">
                   <Button variant="outline" className="gap-2">
                     View All Machines
                   </Button>
