@@ -1,6 +1,18 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Phone, Mail, Images } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import {
+  Phone,
+  Mail,
+  Images,
+  ArrowRight,
+  CheckCircle2,
+  Camera,
+  Calendar,
+  Clock,
+  MapPin,
+  Wrench,
+  Sparkles,
+} from "lucide-react";
 import Link from "next/link";
 import HeroSection from "@/components/hero";
 import { MachineCard } from "@/components/machine-card";
@@ -8,7 +20,9 @@ import {
   contentfulClient,
   getGalleryAlbums,
   getImageUrl,
+  richTextToPlainText,
 } from "@/lib/contentful";
+import type { GalleryAlbumEntry } from "@/types/contentful";
 
 export const revalidate = 3600; // Revalidate content every hour
 
@@ -45,29 +59,53 @@ export default async function HomePage() {
   const machines = await getMachines();
   const galleryAlbums = await getGalleryAlbums(6);
 
-  // Sort by creation date (newest first) and show only the latest 5 featured
+  // Sort by creation date (newest first) and show only the latest 5 featured.
+  // Available machines take priority over sold out ones.
+  const byAvailabilityThenDate = (a: any, b: any) => {
+    const aAvailable = a.isAvailable ? 0 : 1;
+    const bAvailable = b.isAvailable ? 0 : 1;
+    if (aAvailable !== bAvailable) return aAvailable - bAvailable;
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+  };
+
   const featuredProducts = machines
-    .filter((machine) => machine.isFeatured === true)
-    .sort(
-      (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    .filter(
+      (machine) => machine.isFeatured === true && machine.isAvailable !== false
     )
+    .sort(byAvailabilityThenDate)
     .slice(0, 6);
 
-  // All machines, newest first — capped for homepage display
-  const allMachines = [...machines]
-    .sort(
-      (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    )
-    .slice(0, 8);
+  // All machines, available first then newest first — capped for homepage display
+  const allMachines = [...machines].sort(byAvailabilityThenDate).slice(0, 8);
+
+  const formatDate = (dateStr?: string, fallback?: string) => {
+    const d = dateStr
+      ? new Date(dateStr)
+      : fallback
+      ? new Date(fallback)
+      : null;
+    if (!d || isNaN(d.getTime())) return "";
+    return d.toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+  };
+
+  const getExcerpt = (album: GalleryAlbumEntry, max = 160) => {
+    const text = richTextToPlainText(album.fields.description);
+    if (!text) {
+      return "Photos and details from this machine arriving at our facility.";
+    }
+    return text.length > max ? text.slice(0, max).trimEnd() + "…" : text;
+  };
 
   const MachineTyupes = [
     {
       image: "/press.jpeg",
       alt: "PRESS MACHINE",
       title: "PRESS",
-      url: "/press",
+      url: "/press-one",
     },
     {
       image: "/cutting-machine.png",
@@ -197,7 +235,7 @@ export default async function HomePage() {
                 machinery
               </p>
             </div>
-            <Link href="/press">
+            <Link href="/stock">
               <Button variant="outline" className="hidden sm:flex gap-2">
                 View All
               </Button>
@@ -212,7 +250,7 @@ export default async function HomePage() {
                 ))}
               </div>
               <div className="text-center sm:hidden">
-                <Link href="/press">
+                <Link href="/stock">
                   <Button variant="outline" className="gap-2">
                     View All Machines
                   </Button>
@@ -228,71 +266,158 @@ export default async function HomePage() {
       </section>
 
       {/* Recent Updates Gallery Section */}
-      <section className="pb-16 sm:pb-20 bg-muted/30">
+      <section className="py-16 sm:py-20 bg-muted/30">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-end justify-between mb-8">
-            <div className="border-l-4 border-primary pl-4">
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight mb-1 uppercase">
+          {/* Header */}
+          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-10">
+            <div className="max-w-2xl">
+              <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-primary mb-3">
+                <Sparkles className="h-3.5 w-3.5" />
+                From the warehouse floor
+              </span>
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight mb-2 uppercase">
                 Recent Updates
               </h2>
-              <p className="text-muted-foreground text-sm">
-                Latest loading &amp; unloading machine arrivals
+              <p className="text-muted-foreground text-sm sm:text-base">
+                Fresh arrivals of printing presses, paper cutters, die cutters
+                and post-press machinery — documented as they are loaded and
+                unloaded at our facility.
               </p>
             </div>
-            <Link href="/recent-updates">
-              <Button variant="outline" className="hidden sm:flex gap-2">
-                <Images className="h-4 w-4" />
-                View All
+            <Link href="/recent-updates" className="hidden sm:inline-flex shrink-0">
+              <Button variant="outline" className="gap-2">
+                View all updates
+                <ArrowRight className="h-4 w-4" />
               </Button>
             </Link>
           </div>
 
           {galleryAlbums.length > 0 ? (
-            <>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-1">
-                {galleryAlbums.map((album) => {
-                  const cover = album.fields.images?.[0];
-                  const coverUrl = cover
-                    ? getImageUrl(cover)
-                    : "/placeholder.svg";
-                  return (
+            (() => {
+              const [featuredAlbum, ...rest] = galleryAlbums;
+              const railAlbums = rest.slice(0, 3);
+              const hasRail = railAlbums.length > 0;
+              const featuredCover = featuredAlbum.fields.images?.[0];
+              const featuredUrl = featuredCover
+                ? getImageUrl(featuredCover)
+                : "/placeholder.svg";
+              const featuredDate = formatDate(
+                featuredAlbum.fields.publishedDate,
+                featuredAlbum.sys.createdAt
+              );
+
+              return (
+                <>
+                  <div className="grid lg:grid-cols-3 gap-6">
+                    {/* Featured album */}
                     <Link
-                      key={album.sys.id}
-                      href={`/recent-updates/${album.fields.slug}`}
-                      className="group relative aspect-square overflow-hidden bg-muted block">
-                      <img
-                        src={coverUrl}
-                        alt={album.fields.title}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
-                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/55 transition-colors duration-300 flex flex-col justify-end p-4">
-                        <div className="translate-y-3 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-                          <p className="text-white font-semibold text-sm leading-snug line-clamp-2 mb-1">
-                            {album.fields.title}
-                          </p>
-                          {album.fields.images?.length > 1 && (
-                            <p className="text-white/70 text-xs">
-                              {album.fields.images.length} photos
-                            </p>
+                      href={`/recent-updates/${featuredAlbum.fields.slug}`}
+                      className={`group relative flex flex-col overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-border hover:shadow-lg transition-shadow ${
+                        hasRail ? "lg:col-span-2" : "lg:col-span-3"
+                      }`}>
+                      <div className="relative aspect-[16/10] overflow-hidden bg-muted">
+                        <img
+                          src={featuredUrl}
+                          alt={featuredAlbum.fields.title}
+                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
+                        <span className="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1 text-xs font-semibold uppercase tracking-wide text-primary-foreground">
+                          <Sparkles className="h-3.5 w-3.5" />
+                          Latest arrival
+                        </span>
+                      </div>
+                      <div className="flex flex-1 flex-col p-6">
+                        <h3 className="text-xl sm:text-2xl font-bold leading-snug group-hover:text-primary transition-colors mb-2">
+                          {featuredAlbum.fields.title}
+                        </h3>
+                        <p className="text-muted-foreground text-sm leading-relaxed line-clamp-3 mb-4">
+                          {getExcerpt(featuredAlbum, 180)}
+                        </p>
+                        <div className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-muted-foreground">
+                          {featuredDate && (
+                            <span className="inline-flex items-center gap-1.5">
+                              <Calendar className="h-3.5 w-3.5" />
+                              {featuredDate}
+                            </span>
                           )}
+                          {featuredAlbum.fields.images?.length > 0 && (
+                            <span className="inline-flex items-center gap-1.5">
+                              <Camera className="h-3.5 w-3.5" />
+                              {featuredAlbum.fields.images.length} photos
+                            </span>
+                          )}
+                          <span className="ml-auto inline-flex items-center gap-1.5 font-semibold text-primary">
+                            View album
+                            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                          </span>
                         </div>
                       </div>
                     </Link>
-                  );
-                })}
-              </div>
-              <div className="text-center mt-6 sm:hidden">
-                <Link href="/recent-updates">
-                  <Button variant="outline" className="gap-2">
-                    <Images className="h-4 w-4" />
-                    View All Updates
-                  </Button>
-                </Link>
-              </div>
-            </>
+
+                    {/* Rail of compact cards */}
+                    {hasRail && (
+                      <div className="flex flex-col gap-4">
+                        {railAlbums.map((album) => {
+                          const cover = album.fields.images?.[0];
+                          const coverUrl = cover
+                            ? getImageUrl(cover)
+                            : "/placeholder.svg";
+                          const date = formatDate(
+                            album.fields.publishedDate,
+                            album.sys.createdAt
+                          );
+                          return (
+                            <Link
+                              key={album.sys.id}
+                              href={`/recent-updates/${album.fields.slug}`}
+                              className="group flex gap-4 rounded-xl bg-white p-3 shadow-sm ring-1 ring-border hover:shadow-md transition-shadow">
+                              <div className="relative h-20 w-24 shrink-0 overflow-hidden rounded-lg bg-muted">
+                                <img
+                                  src={coverUrl}
+                                  alt={album.fields.title}
+                                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                />
+                              </div>
+                              <div className="flex min-w-0 flex-1 flex-col justify-center">
+                                <h4 className="line-clamp-2 text-sm font-semibold leading-snug group-hover:text-primary transition-colors">
+                                  {album.fields.title}
+                                </h4>
+                                <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-muted-foreground">
+                                  {date && (
+                                    <span className="inline-flex items-center gap-1">
+                                      <Calendar className="h-3 w-3" />
+                                      {date}
+                                    </span>
+                                  )}
+                                  {album.fields.images?.length > 0 && (
+                                    <span className="inline-flex items-center gap-1">
+                                      <Camera className="h-3 w-3" />
+                                      {album.fields.images.length}
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="mt-8 text-center sm:hidden">
+                    <Link href="/recent-updates">
+                      <Button variant="outline" className="gap-2">
+                        <Images className="h-4 w-4" />
+                        View All Updates
+                      </Button>
+                    </Link>
+                  </div>
+                </>
+              );
+            })()
           ) : (
-            <div className="text-center py-16 text-muted-foreground">
-              <Images className="h-12 w-12 mx-auto mb-4 opacity-30" />
+            <div className="rounded-xl bg-white py-16 text-center text-muted-foreground shadow-sm ring-1 ring-border">
+              <Images className="mx-auto mb-4 h-12 w-12 opacity-30" />
               <p>No updates available yet. Check back soon!</p>
             </div>
           )}
@@ -323,33 +448,75 @@ export default async function HomePage() {
       {/* CTA Section */}
       <section className="py-16 sm:py-20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <Card className="bg-gradient-to-r from-primary to-primary/90 text-primary-foreground">
-            <CardContent className="p-8 sm:p-12 text-center">
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4">
-                Ready to Find Your Perfect Machinery?
+          <div className="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-border grid lg:grid-cols-5">
+            {/* Left: SEO content */}
+            <div className="lg:col-span-3 p-8 sm:p-12">
+              <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-primary mb-4">
+                <Wrench className="h-3.5 w-3.5" />
+                Your machinery partner
+              </span>
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight mb-4">
+                Source Reliable Printing &amp; Paper-Converting Machinery in
+                Bangladesh
               </h2>
-              <p className="text-base sm:text-lg lg:text-xl opacity-90 mb-8 max-w-2xl mx-auto">
-                Get in touch with our experts today. We'll help you find the
-                right equipment for your specific needs and budget.
+              <p className="text-base sm:text-lg text-muted-foreground leading-relaxed mb-6 max-w-2xl">
+                From single to multi-colour printing presses, paper cutters,
+                die cutters and complete post-press lines, Seema Enterprise
+                supplies inspected, ready-to-run equipment backed by 25+ years
+                of industry experience. Browse our stock or tell us what you
+                need and our team will recommend the right machine for your
+                budget and output.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button
-                  size="lg"
-                  variant="secondary"
-                  className="text-base sm:text-lg px-6 sm:px-8">
-                  <Phone className="mr-2 h-5 w-5" />
-                  Call Now: +880 1711-871147
+              <ul className="grid sm:grid-cols-2 gap-3">
+                {[
+                  "Inspected, ready-to-run machines",
+                  "One-colour to four-colour+ printing presses",
+                  "Paper cutting, die cutting & post-press",
+                  "Expert guidance and after-sales support",
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-2 text-sm">
+                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Right: contact panel */}
+            <div className="lg:col-span-2 bg-secondary text-secondary-foreground p-8 sm:p-12 flex flex-col justify-center">
+              <h3 className="text-xl font-bold mb-1">Talk to an expert</h3>
+              <p className="text-sm opacity-80 mb-6">
+                Get a fast response on pricing, availability and
+                specifications.
+              </p>
+              <div className="space-y-3">
+                <Button asChild size="lg" className="w-full text-base font-semibold">
+                  <Link href="tel:+8801711871147">
+                    <Phone className="mr-2 h-5 w-5" />
+                    +880 1711-871147
+                  </Link>
                 </Button>
                 <Button
+                  asChild
                   size="lg"
                   variant="outline"
-                  className="text-base sm:text-lg px-6 sm:px-8 bg-transparent border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary">
-                  <Mail className="mr-2 h-5 w-5" />
-                  Send Enquiry
+                  className="w-full text-base font-semibold bg-transparent border-secondary-foreground text-secondary-foreground hover:bg-secondary-foreground hover:text-secondary">
+                  <Link href="mailto:info@seemaenterprisebd.com">
+                    <Mail className="mr-2 h-5 w-5" />
+                    Send an enquiry
+                  </Link>
                 </Button>
               </div>
-            </CardContent>
-          </Card>
+              <div className="mt-6 space-y-2 text-xs opacity-80">
+                <p className="flex items-center gap-2">
+                  <MapPin className="h-3.5 w-3.5" /> Dhaka, Bangladesh
+                </p>
+                <p className="flex items-center gap-2">
+                  <Clock className="h-3.5 w-3.5" /> Sat–Thu, 9:00 AM – 6:00 PM
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
     </div>
