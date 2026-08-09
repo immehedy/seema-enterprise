@@ -11,6 +11,11 @@ export default function HeroSection() {
       image: "/seema-hero.jpg",
       alt: "KOMFI Building exterior",
     },
+    {
+      image: "/banner3.png",
+      mobileImage: "/mobile-banner-2.png",
+      alt: "Heidelberg CD 74-5+L-F",
+    },
   ];
 
   return (

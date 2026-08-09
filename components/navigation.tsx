@@ -148,7 +148,7 @@ export function Navigation() {
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild className="lg:hidden">
               <Button
-                variant="ghost"
+                variant="outline"
                 size="icon"
                 className="absolute top-0 right-0 h-20 w-20 border-0 rounded-none hover:bg-gray-50"
                 aria-label="Toggle navigation">
