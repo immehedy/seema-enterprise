@@ -122,7 +122,9 @@ export default function CategoryPage({
       );
       return (
         machineCategoryName &&
-        categories.some((cat) => cat.replace(/\s+/g, "") === machineCategoryName)
+        categories.some(
+          (cat) => cat.replace(/\s+/g, "") === machineCategoryName
+        )
       );
     })
     .sort((a, b) => {
@@ -153,8 +155,8 @@ export default function CategoryPage({
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl lg:text-4xl font-bold mb-4">
+      <div className="mb-6">
+        <h1 className="text-3xl lg:text-4xl font-bold mb-2">
           {categoryDisplayName}
         </h1>
         <p className="text-xl text-muted-foreground">
@@ -168,24 +170,24 @@ export default function CategoryPage({
       {/* Tabs for press categories */}
       {isPressCategory && (
         <div className="mb-6">
-          <div className="flex gap-2 border-b">
+          <div className="flex gap-2 border-b bg-[#4043a6] text-white font-semibold">
             <Link href="/press-one">
               <Button
-                variant={slug === "press-one" ? "default" : "ghost"}
+                variant={slug === "press-one" ? "underline" : "ghost"}
                 className="rounded-b-none">
                 ONE COLOUR
               </Button>
             </Link>
             <Link href="/press-two">
               <Button
-                variant={slug === "press-two" ? "default" : "ghost"}
+                variant={slug === "press-two" ? "underline" : "ghost"}
                 className="rounded-b-none">
                 TWO COLOUR
               </Button>
             </Link>
             <Link href="/press-four">
               <Button
-                variant={slug === "press-four" ? "default" : "ghost"}
+                variant={slug === "press-four" ? "underline" : "ghost"}
                 className="rounded-b-none">
                 FOUR COLOUR +
               </Button>
@@ -226,5 +228,3 @@ export default function CategoryPage({
     </div>
   );
 }
-
-
