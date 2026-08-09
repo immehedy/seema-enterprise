@@ -143,8 +143,6 @@ export default function CategoryPage({
     slug
   );
 
-  console.log({ machines, filteredMachines, slug });
-
   if (loading) {
     return (
       <div className="container mx-auto px-4 py-20 text-center">
@@ -156,39 +154,53 @@ export default function CategoryPage({
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-6">
-        <h1 className="text-3xl lg:text-4xl font-bold mb-2">
+        <h1
+          className="text-3xl lg:text-4xl font-bold mb-2 uppercase tracking-wide"
+          style={{ fontFamily: "var(--font-heading)", fontWeight: 700 }}>
           {categoryDisplayName}
         </h1>
-        <p className="text-xl text-muted-foreground">
-          Browse our extensive collection of printing and paper-converting
-          machinery
-        </p>
       </div>
 
       {/* Search and Filters */}
 
       {/* Tabs for press categories */}
       {isPressCategory && (
-        <div className="mb-6">
-          <div className="flex gap-2 border-b bg-[#4043a6] text-white font-semibold">
+        <div className="mb-6 sticky top-16 z-30">
+          <div
+            className="flex gap-2 rounded-lg px-2 py-1
+                 bg-[#4043a6]/30 backdrop-blur-md backdrop-saturate-150
+                 border border-white/20 shadow-lg shadow-black/5
+                 text-white font-semibold">
             <Link href="/press-one">
               <Button
                 variant={slug === "press-one" ? "underline" : "ghost"}
-                className="rounded-b-none">
+                className={
+                  slug === "press-one"
+                    ? "rounded-md bg-white/25 hover:bg-white/30"
+                    : "rounded-md hover:bg-white/10"
+                }>
                 ONE COLOUR
               </Button>
             </Link>
             <Link href="/press-two">
               <Button
                 variant={slug === "press-two" ? "underline" : "ghost"}
-                className="rounded-b-none">
+                className={
+                  slug === "press-two"
+                    ? "rounded-md bg-white/25 hover:bg-white/30"
+                    : "rounded-md hover:bg-white/10"
+                }>
                 TWO COLOUR
               </Button>
             </Link>
             <Link href="/press-four">
               <Button
                 variant={slug === "press-four" ? "underline" : "ghost"}
-                className="rounded-b-none">
+                className={
+                  slug === "press-four"
+                    ? "rounded-md bg-white/25 hover:bg-white/30"
+                    : "rounded-md hover:bg-white/10"
+                }>
                 FOUR COLOUR +
               </Button>
             </Link>
