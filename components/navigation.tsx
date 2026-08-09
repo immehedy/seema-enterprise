@@ -39,9 +39,6 @@ export function Navigation() {
     },
   ];
 
-  // Flatten for mobile view
-  const allMachineItems = machineColumns.flatMap((column) => column.items);
-
   const afterMachinesItems = [
     { href: "/recent-updates", label: "RECENT UPDATES" },
     { href: "/contact", label: "CONTACT" },
