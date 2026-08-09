@@ -21,7 +21,7 @@ const buttonVariants = cva(
           "hover:bg-transparent hover:border-b-2 hover:border-primary hover:text-primary text-white hover:scale-.9 hover:cursor-pointer",
         link: "text-primary underline-offset-4 hover:underline",
         underline:
-          "rounded-none text-md bg-transparent border-b-2 border-primary text-white font-bold scale-.8 shadow-none",
+          "rounded-none bg-transparent border-b-2 border-primary text-primary font-semibold shadow-none",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",
