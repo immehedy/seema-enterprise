@@ -75,8 +75,6 @@ export default async function HomePage() {
     .sort(byAvailabilityThenDate)
     .slice(0, 6);
 
-  // All machines, available first then newest first — capped for homepage display
-  const allMachines = [...machines].sort(byAvailabilityThenDate).slice(0, 8);
 
   const formatDate = (dateStr?: string, fallback?: string) => {
     const d = dateStr
@@ -217,49 +215,6 @@ export default async function HomePage() {
           ) : (
             <div className="text-center py-16 text-muted-foreground mb-12">
               <p>No featured machines available yet. Check back soon!</p>
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* All Machines */}
-      <section className="">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-end justify-between mb-8">
-            <div className="border-l-4 border-primary pl-4">
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight mb-1 uppercase">
-                All Machines
-              </h2>
-              <p className="text-muted-foreground text-sm">
-                Explore our full range of printing and paper-converting
-                machinery
-              </p>
-            </div>
-            <Link href="/stock">
-              <Button variant="outline" className="hidden sm:flex gap-2">
-                View All
-              </Button>
-            </Link>
-          </div>
-
-          {allMachines.length > 0 ? (
-            <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                {allMachines.map((machine, index) => (
-                  <MachineCard key={machine.slug || index} machine={machine} />
-                ))}
-              </div>
-              <div className="text-center sm:hidden">
-                <Link href="/stock">
-                  <Button variant="outline" className="gap-2">
-                    View All Machines
-                  </Button>
-                </Link>
-              </div>
-            </>
-          ) : (
-            <div className="text-center py-16 text-muted-foreground">
-              <p>No machines available yet. Check back soon!</p>
             </div>
           )}
         </div>
