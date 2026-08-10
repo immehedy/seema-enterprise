@@ -16,6 +16,11 @@ export default function HeroSection() {
       mobileImage: "/mobile-banner-2.png",
       alt: "Heidelberg CD 74-5+L-F",
     },
+    {
+      image: "/banner4.png",
+      mobileImage: "/mobile-banner-3.png",
+      alt: "Heidelberg CD 74-6LX",
+    },
   ];
 
   return (
