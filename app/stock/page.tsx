@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useMemo } from "react";import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Loader } from "@/components/ui/loader";
 import {
   Card,
   CardContent,
@@ -114,11 +115,7 @@ export default function StockPage() {
   console.log({ machines });
 
   if (loading) {
-    return (
-      <div className="container mx-auto px-4 py-20 text-center">
-        <p>Loading machines from Contentful...</p>
-      </div>
-    );
+    return <Loader label="Loading machines from Contentful..." />;
   }
 
   return (

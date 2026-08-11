@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Michroma, Varela_Round } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { Navigation } from "@/components/navigation";
 import { Footer } from "@/components/footer";
+import { Loader } from "@/components/ui/loader";
 import { Suspense } from "react";
 import "./globals.css";
 
@@ -63,7 +64,7 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${arialRounded.variable}  antialiased`}>
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<Loader className="min-h-screen" />}>
           <Navigation />
           <main className="min-h-screen">{children}</main>
           <Footer />

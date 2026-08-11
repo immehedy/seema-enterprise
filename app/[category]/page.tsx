@@ -4,6 +4,7 @@ import { use, useEffect, useState } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { Loader } from "@/components/ui/loader";
 import {
   Card,
   CardContent,
@@ -144,11 +145,7 @@ export default function CategoryPage({
   );
 
   if (loading) {
-    return (
-      <div className="container mx-auto px-4 py-20 text-center">
-        <p>Loading machines from Contentful...</p>
-      </div>
-    );
+    return <Loader label="Loading machines from Contentful..." />;
   }
 
   return (
@@ -167,39 +164,42 @@ export default function CategoryPage({
       {isPressCategory && (
         <div className="mb-6 sticky top-16 z-30">
           <div
-            className="flex gap-2 rounded-lg px-2 py-1
+            className="flex flex-wrap gap-2 sm:flex-nowrap rounded-lg px-2 py-2 sm:py-1
                  bg-[#4043a6]/30 backdrop-blur-md backdrop-saturate-150
                  border border-white/20 shadow-lg shadow-black/5
                  text-white font-semibold">
-            <Link href="/press-one">
+            <Link href="/press-one" className="flex-1 min-w-[110px] sm:flex-none sm:min-w-0">
               <Button
                 variant={slug === "press-one" ? "underline" : "ghost"}
                 className={
-                  slug === "press-one"
+                  "w-full justify-center sm:w-auto " +
+                  (slug === "press-one"
                     ? "rounded-md bg-white/25 hover:bg-white/30"
-                    : "rounded-md hover:bg-white/10"
+                    : "rounded-md hover:bg-white/10")
                 }>
                 ONE COLOUR
               </Button>
             </Link>
-            <Link href="/press-two">
+            <Link href="/press-two" className="flex-1 min-w-[110px] sm:flex-none sm:min-w-0">
               <Button
                 variant={slug === "press-two" ? "underline" : "ghost"}
                 className={
-                  slug === "press-two"
+                  "w-full justify-center sm:w-auto " +
+                  (slug === "press-two"
                     ? "rounded-md bg-white/25 hover:bg-white/30"
-                    : "rounded-md hover:bg-white/10"
+                    : "rounded-md hover:bg-white/10")
                 }>
                 TWO COLOUR
               </Button>
             </Link>
-            <Link href="/press-four">
+            <Link href="/press-four" className="flex-1 min-w-[110px] sm:flex-none sm:min-w-0">
               <Button
                 variant={slug === "press-four" ? "underline" : "ghost"}
                 className={
-                  slug === "press-four"
+                  "w-full justify-center sm:w-auto " +
+                  (slug === "press-four"
                     ? "rounded-md bg-white/25 hover:bg-white/30"
-                    : "rounded-md hover:bg-white/10"
+                    : "rounded-md hover:bg-white/10")
                 }>
                 FOUR COLOUR +
               </Button>
