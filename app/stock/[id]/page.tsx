@@ -3,6 +3,7 @@
 import type React from "react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { Loader } from "@/components/ui/loader";
 import {
   Card,
   CardContent,
@@ -16,7 +17,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Maximize2,
-  Loader2,
 } from "lucide-react";
 import { useParams } from "next/navigation";
 import { getMachineBySlug, getImageUrl } from "@/lib/contentful";
@@ -76,14 +76,8 @@ export default function ProductDetailPage() {
     return (
       <div className="container mx-auto px-4 py-8">
         <Card>
-          <CardContent className="p-12 text-center">
-            <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
-            <h1 className="text-2xl font-bold mb-4">
-              Loading Machine Details...
-            </h1>
-            <p className="text-muted-foreground">
-              Please wait while we fetch the machine information.
-            </p>
+          <CardContent className="p-12">
+            <Loader label="Loading Machine Details..." />
           </CardContent>
         </Card>
       </div>

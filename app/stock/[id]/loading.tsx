@@ -1,4 +1,7 @@
+import { Loader } from "@/components/ui/loader";
+
 export default function Loading() {
-    return null
-  }
-  
+  return (
+    <Loader className="min-h-[60vh]" label="Loading machine details..." />
+  );
+}
