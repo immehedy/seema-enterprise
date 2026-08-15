@@ -17,7 +17,7 @@ export default function HeroSection() {
       alt: "Heidelberg CD 74-5+L-F",
     },
     {
-      image: "/banner4.png",
+      image: "/banner4.jpeg",
       mobileImage: "/mobile-banner-3.png",
       alt: "Heidelberg CD 74-6LX",
     },
