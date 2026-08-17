@@ -126,10 +126,10 @@ export default async function HomePage() {
   ];
 
   const stats = [
-    { number: "500+", label: "Machines Sold per Year" },
-    { number: "25+", label: "Years Experience" },
+    { number: "300+", label: "Machines Sold per Year" },
+    { number: "35+", label: "Years Experience" },
     { number: "50+", label: "Supplier countries involved" },
-    { number: "98%", label: "Customer Satisfaction" },
+    { number: "100+", label: "Available stock of machines" },
   ];
 
   return (
